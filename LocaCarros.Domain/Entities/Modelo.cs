@@ -1,4 +1,5 @@
 ﻿using LocaCarros.Domain.Enuns;
+using System.Diagnostics.CodeAnalysis;
 
 
 namespace LocaCarros.Domain.Entities
@@ -13,34 +14,19 @@ namespace LocaCarros.Domain.Entities
         public int MarcaId { get; private set; }
         public Marca Marca { get; private set; } = null!;
 
+        [ExcludeFromCodeCoverage]
         private Modelo() { }
-        public Modelo(int id, string nome, string versao, decimal motorizacao, EnumTipoCarroceria tipoCarroceria, int marcaId, Marca marca)
-        {
-            SetId(id);
-            SetNome(nome);
-            SetVersao(versao);
-            SetMotorizacao(motorizacao);
-            SetTipoCarroceria(tipoCarroceria);
-            SetMarca(marcaId, marca);
-        }
-        public Modelo(string nome, string versao, decimal motorizacao, EnumTipoCarroceria tipoCarroceria, int marcaId, Marca marca)
+   
+        public Modelo(string nome, string versao, decimal motorizacao, EnumTipoCarroceria tipoCarroceria, Marca marca)
         {
             SetNome(nome);
             SetVersao(versao);
             SetMotorizacao(motorizacao);
             SetTipoCarroceria(tipoCarroceria);
-            SetMarca(marcaId, marca);
+            SetMarca(marca);
         }
 
-        private void SetId(int id)
-        {
-
-            if (id < 0)
-            {
-                throw new ArgumentException("Id Inválido", nameof(id));
-            }
-            Id = id;
-        }
+  
         private void SetNome(string nome)
         {
             if (String.IsNullOrWhiteSpace(nome))
@@ -71,21 +57,22 @@ namespace LocaCarros.Domain.Entities
             TipoCarroceria = tipoCarroceria;
         }
 
-        private void SetMarca(int marcaId, Marca marca)
+        private void SetMarca(Marca marca)
         {
-            if (marcaId <= 0) throw new ArgumentException("O id da marca precisa ser válido", nameof(marcaId));
-            if (marca == null) throw new ArgumentNullException(nameof(marca), "A marca não pode ser nula.");
-            MarcaId = marcaId;
-            Marca = marca;
+        
+            Marca = marca ?? throw new ArgumentNullException(nameof(marca), "A marca não pode ser nula.");
+            MarcaId = marca.Id;
         }
 
-        public void Update(string nome, string versao, decimal motorizacao, EnumTipoCarroceria tipoCarroceria, int marcaId, Marca marca)
+        public void Update(string nome, string versao, decimal motorizacao, EnumTipoCarroceria tipoCarroceria, Marca marca)
         {
+            if (Id < 0)
+                throw new InvalidOperationException("O Modelo deve conter um Id válido.");
             SetNome(nome);
             SetVersao(versao);
             SetMotorizacao(motorizacao);
             SetTipoCarroceria(tipoCarroceria);
-            SetMarca(marcaId, marca);
+            SetMarca(marca);
 
         }
     }

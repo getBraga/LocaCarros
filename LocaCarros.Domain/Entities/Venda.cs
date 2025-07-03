@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,24 +11,16 @@ namespace LocaCarros.Domain.Entities
     {
         public int Id { get; private set; }
         public decimal ValorVenda { get; private set; }
-        public DateTime DataVenda{ get; private  set; }
+        public DateTime DataVenda { get; private set; }
         public int CarroId { get; private set; }
         public Carro Carro { get; private set; } = null!;
-        
+
+        [ExcludeFromCodeCoverage]
         private Venda() { }
-
-        public Venda(int id, decimal valorVenda, DateTime dataVenda, Carro carro)
-        {
-            SetId(id);
-            SetValorVenda(valorVenda);
-            SetDataVenda(dataVenda);
-            SetCarro(carro);
-        }
-
 
         public Venda(decimal valorVenda, DateTime dataVenda, Carro carro)
         {
-           
+
             SetValorVenda(valorVenda);
             SetDataVenda(dataVenda);
             SetCarro(carro);
@@ -35,19 +28,13 @@ namespace LocaCarros.Domain.Entities
 
         public void Update(decimal valorVenda, DateTime dataVenda, Carro carro)
         {
+            if (Id < 0)
+                throw new InvalidOperationException("A Venda deve conter um Id válido.");
             SetValorVenda(valorVenda);
             SetDataVenda(dataVenda);
             SetCarro(carro);
         }
-        private void SetId(int id)
-        {
-            if (id < 0)
-            {
-                throw new ArgumentException("Id inválido", nameof(id));
-            }
-            Id = id;
-        } 
-        
+      
         private void SetValorVenda(decimal valorVenda)
         {
             if (valorVenda <= 0)
@@ -61,6 +48,10 @@ namespace LocaCarros.Domain.Entities
             if (dataVenda == default)
             {
                 throw new ArgumentException("Data de venda inválida.", nameof(dataVenda));
+            }
+            if (dataVenda > DateTime.Now)
+            {
+                throw new ArgumentException("A data da venda não pode ser no futuro.", nameof(dataVenda));
             }
             DataVenda = dataVenda;
         }

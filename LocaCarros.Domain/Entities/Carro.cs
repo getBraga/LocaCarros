@@ -1,6 +1,7 @@
 ﻿
 
 using LocaCarros.Domain.Enuns;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LocaCarros.Domain.Entities
 {
@@ -15,18 +16,9 @@ namespace LocaCarros.Domain.Entities
         public int ModeloId { get; private set; }
         public Modelo Modelo { get; private set; } = null!;
         public ICollection<Aluguel> Alugueis { get; private set; } = new List<Aluguel>()!;
-
+        [ExcludeFromCodeCoverage]
         private Carro() { }
-        public Carro(int id, string placa, int ano, string cor, DateTime dataFabricacao, EnumCarroStatus status, Modelo modelo)
-        {
-            SetId(id);
-            SetPlaca(placa);
-            SetAno(ano);
-            SetCor(cor);
-            SetDataFabricacao(dataFabricacao);
-            SetStatus(status);
-            SetModelo(modelo);
-        }
+      
 
         public Carro(string placa, int ano, string cor, DateTime dataFabricacao, EnumCarroStatus status, Modelo modelo)
         {
@@ -40,6 +32,8 @@ namespace LocaCarros.Domain.Entities
 
         public void Update(string placa, int ano, string cor, DateTime dataFabricacao, EnumCarroStatus status, Modelo modelo)
         {
+            if (Id < 0)
+                throw new InvalidOperationException("O Carro deve conter um Id válido.");
             SetPlaca(placa);
             SetAno(ano);
             SetCor(cor);
@@ -48,14 +42,7 @@ namespace LocaCarros.Domain.Entities
             SetModelo(modelo);
         }
 
-        private void SetId(int id)
-        {
-            if (id < 0)
-            {
-                throw new ArgumentException("Id inválido", nameof(id));
-            }
-            Id = id;
-        }
+   
 
         private void SetPlaca(string placa)
         {
@@ -86,6 +73,10 @@ namespace LocaCarros.Domain.Entities
             if (dataFabricacao == default)
             {
                 throw new ArgumentException("Data de fabricação inválida.", nameof(dataFabricacao));
+            }
+            if(dataFabricacao > DateTime.Now)
+            {
+                throw new ArgumentException("A data de fabricação não pode ser no futuro.", nameof(dataFabricacao));
             }
             DataFabricacao = dataFabricacao;
         }
