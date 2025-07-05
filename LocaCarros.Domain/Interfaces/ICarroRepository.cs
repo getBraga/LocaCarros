@@ -10,10 +10,10 @@ namespace LocaCarros.Domain.Interfaces
     public interface ICarroRepository
     {
         Task<IEnumerable<Carro>> GetCarrosAsync();
-        Task<Carro> GetCarroByIdAsync(int id);
+        Task<Carro?> GetCarroByIdAsync(int id);
         Task<Carro> CreateAsync(Carro carro);
         Task<Carro> UpdateAsync(Carro carro);
-        Task<bool> DeleteAsync(int id);
+        Task<bool> DeleteAsync(Carro carro);
         Task<IEnumerable<Carro>> GetCarrosByModeloIdAsync(int modeloId);
     
     }
