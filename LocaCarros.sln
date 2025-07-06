@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocaCarros.Infra.IOC", "Loc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocaCarros.Domain.Tests", "LocaCarros.Domain.Tests\LocaCarros.Domain.Tests.csproj", "{80E202E3-B91B-4B8C-830D-E96C36FC7B6C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocaCarros.API", "LocaCarros.API\LocaCarros.API.csproj", "{991C8E1D-E9AD-4761-BB26-E12BC7232EDB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{80E202E3-B91B-4B8C-830D-E96C36FC7B6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80E202E3-B91B-4B8C-830D-E96C36FC7B6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80E202E3-B91B-4B8C-830D-E96C36FC7B6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{991C8E1D-E9AD-4761-BB26-E12BC7232EDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{991C8E1D-E9AD-4761-BB26-E12BC7232EDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{991C8E1D-E9AD-4761-BB26-E12BC7232EDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{991C8E1D-E9AD-4761-BB26-E12BC7232EDB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
