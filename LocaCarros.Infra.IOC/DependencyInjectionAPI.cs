@@ -4,6 +4,7 @@ using LocaCarros.Application.Services;
 using LocaCarros.Domain.Interfaces;
 using LocaCarros.Infra.Data.Context;
 using LocaCarros.Infra.Data.Repositories;
+using LocaCarros.Infra.Data.Transaction;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,7 +18,8 @@ namespace LocaCarros.Infra.IOC
             services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"
             ), b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
-
+       
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IMarcaRepository, MarcaRepository>();
             services.AddScoped<IModeloRepository, ModeloRepository>();
             services.AddScoped<ICarroRepository, CarroRepository>();
@@ -26,6 +28,7 @@ namespace LocaCarros.Infra.IOC
             services.AddScoped<IMarcaService, MarcaService>();
             services.AddScoped<IModeloService, ModeloService>();
             services.AddScoped<ICarroService, CarroService>();
+            services.AddScoped<IVendaService, VendaService>();
             services.AddAutoMapper(cfg =>
             {
                 cfg.AddProfile<DomainToDTOMappingProfile>();
