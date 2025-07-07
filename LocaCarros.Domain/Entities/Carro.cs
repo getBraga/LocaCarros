@@ -80,7 +80,7 @@ namespace LocaCarros.Domain.Entities
             }
             DataFabricacao = dataFabricacao;
         }
-        private void SetStatus(EnumCarroStatus status)
+        public void SetStatus(EnumCarroStatus status)
         {
             if (!Enum.IsDefined(status))
             {

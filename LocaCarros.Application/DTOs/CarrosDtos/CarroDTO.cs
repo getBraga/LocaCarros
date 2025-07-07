@@ -24,8 +24,8 @@ namespace LocaCarros.Application.DTOs.CarrosDtos
         public string Status { get; set; }  = string.Empty;
         public int ModeloId { get; set; }
 
-        public string ModeloVersao { get; private set; } = string.Empty;
-        public decimal ModeloMotorizacao { get; private set; }
+        public string ModeloVersao { get;  set; } = string.Empty;
+        public decimal ModeloMotorizacao { get;  set; }
        
         public string ModeloNome { get; set; } = null!;
         public string MarcaNome { get; set; } = null!;
