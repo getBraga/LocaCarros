@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace LocaCarros.Domain.Entities
         public DateTime DataVenda { get; private set; }
         public int CarroId { get; private set; }
         public Carro Carro { get; private set; } = null!;
+        public byte[] RowVersion { get; set; } = [];
 
         [ExcludeFromCodeCoverage]
         private Venda() { }
@@ -24,6 +26,11 @@ namespace LocaCarros.Domain.Entities
             SetValorVenda(valorVenda);
             SetDataVenda(dataVenda);
             SetCarro(carro);
+          
+        }
+
+        public void SetRowVersion(byte[] rowVersion) { 
+            RowVersion = rowVersion;
         }
 
         public void Update(decimal valorVenda, DateTime dataVenda, Carro carro)
@@ -35,7 +42,7 @@ namespace LocaCarros.Domain.Entities
             SetCarro(carro);
         }
       
-        private void SetValorVenda(decimal valorVenda)
+        public void SetValorVenda(decimal valorVenda)
         {
             if (valorVenda <= 0)
             {
@@ -43,7 +50,7 @@ namespace LocaCarros.Domain.Entities
             }
             ValorVenda = valorVenda;
         }
-        private void SetDataVenda(DateTime dataVenda)
+        public void SetDataVenda(DateTime dataVenda)
         {
             if (dataVenda == default)
             {
@@ -55,7 +62,7 @@ namespace LocaCarros.Domain.Entities
             }
             DataVenda = dataVenda;
         }
-        private void SetCarro(Carro carro)
+        public void SetCarro(Carro carro)
         {
             Carro = carro ?? throw new ArgumentNullException(nameof(carro), "O carro não pode ser nulo.");
             CarroId = carro.Id;

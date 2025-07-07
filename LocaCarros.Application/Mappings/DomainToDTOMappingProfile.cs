@@ -2,6 +2,7 @@
 using LocaCarros.Application.DTOs.CarrosDtos;
 using LocaCarros.Application.DTOs.MarcasDtos;
 using LocaCarros.Application.DTOs.ModelosDtos;
+using LocaCarros.Application.DTOs.VendasDtos;
 using LocaCarros.Domain.Entities;
 
 namespace LocaCarros.Application.Mappings
@@ -17,7 +18,10 @@ namespace LocaCarros.Application.Mappings
             CreateMap<Modelo, ModeloDTOUpdate>().ReverseMap();
             CreateMap<Carro, CarroDTOAdd>().ReverseMap();
             CreateMap<Carro, CarroDTOUpdate>().ReverseMap();
-           
+            CreateMap<Venda, VendaDTO>()
+                .ForMember(dest => dest.ModeloNome, opt => opt.MapFrom(src => src.Carro.Modelo.Nome)).ReverseMap();
+            CreateMap<Venda, VendaDTOAdd>().ReverseMap();
+            CreateMap<Venda, VendaDTOUpdate>().ReverseMap();
             CreateMap<Carro, CarroDTO>()
             .ForMember(dest => dest.MarcaNome, opt => opt.MapFrom(src => src.Modelo.Marca.Nome)).ReverseMap();
 

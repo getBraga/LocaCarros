@@ -13,16 +13,18 @@ namespace LocaCarros.Infra.Data.EntitiesConfiguration
     {
         public void Configure(EntityTypeBuilder<Venda> builder)
         {
-           IEntityTypeConfiguration<Carro> carroConfiguration = new CarroConfiguration();
+            IEntityTypeConfiguration<Carro> carroConfiguration = new CarroConfiguration();
             builder.HasKey(v => v.Id);
             builder.Property(v => v.DataVenda).IsRequired();
             builder.Property(v => v.ValorVenda).IsRequired().HasColumnType("decimal(18,2)");
-            
+            builder.Property(x => x.RowVersion)
+             .IsRowVersion()
+             .IsConcurrencyToken();
             builder.HasOne(v => v.Carro)
                    .WithMany()
                    .HasForeignKey(v => v.CarroId)
                    .IsRequired();
-          
+
         }
     }
 }

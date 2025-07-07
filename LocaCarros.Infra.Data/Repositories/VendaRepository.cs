@@ -18,7 +18,10 @@ namespace LocaCarros.Infra.Data.Repositories
         {
             _contextVenda.Add(venda);
             await _contextVenda.SaveChangesAsync();
-            return venda;
+            var vendaCarro = await _contextVenda.Vendas
+         .Include(v => v.Carro)
+         .FirstAsync(v => v.Id == venda.Id);
+            return vendaCarro;
         }
 
         public async Task<bool> DeleteAsync(Venda venda)
@@ -29,12 +32,16 @@ namespace LocaCarros.Infra.Data.Repositories
 
         public async Task<Venda?> GetVendaByIdAsync(int id)
         {
-            return await _contextVenda.Vendas.FindAsync(id);
+            return await _contextVenda.Vendas
+                .Include(x => x.Carro)
+                .ThenInclude(x => x.Modelo)
+                .Where(x => x.Id == id)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Venda>> GetVendasAsync()
         {
-            return await _contextVenda.Vendas.AsNoTracking().Include(x => x.Carro).ToListAsync();
+            return await _contextVenda.Vendas.AsNoTracking().Include(x => x.Carro).ThenInclude(x => x.Modelo).ToListAsync();
 
         }
 
