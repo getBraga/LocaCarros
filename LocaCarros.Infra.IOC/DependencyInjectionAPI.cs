@@ -25,6 +25,7 @@ namespace LocaCarros.Infra.IOC
             services.AddScoped<IVendaRepository, VendaRepository>();
             services.AddScoped<IMarcaService, MarcaService>();
             services.AddScoped<IModeloService, ModeloService>();
+            services.AddScoped<ICarroService, CarroService>();
             services.AddAutoMapper(cfg =>
             {
                 cfg.AddProfile<DomainToDTOMappingProfile>();

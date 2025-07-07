@@ -37,7 +37,7 @@ namespace LocaCarros.Infra.Data.Repositories
 
         public async Task<IEnumerable<Carro>> GetCarrosAsync()
         {
-         return await _contextCarro.Carros
+         return await _contextCarro.Carros.Include(x => x.Modelo).ThenInclude(x => x.Marca)
                 .AsNoTracking()
                 .ToListAsync();
 
