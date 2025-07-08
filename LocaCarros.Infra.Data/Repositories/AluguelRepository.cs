@@ -33,6 +33,8 @@ namespace LocaCarros.Infra.Data.Repositories
         public async Task<IEnumerable<Aluguel>> GetAlugueisAsync()
         {
             return await _contextAluguel.Alugueis
+                   .Include(x => x.Carro)
+                   .ThenInclude(x => x.Modelo)
                    .AsNoTracking()
                    .ToListAsync();
 
@@ -49,7 +51,10 @@ namespace LocaCarros.Infra.Data.Repositories
 
         public async Task<Aluguel?> GetAluguelByIdAsync(int id)
         {
-            return await _contextAluguel.Alugueis.FindAsync(id);
+            return await _contextAluguel.Alugueis
+                .Include(x => x.Carro)
+                .ThenInclude(x => x.Modelo)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<Aluguel> UpdateAsync(Aluguel aluguel)

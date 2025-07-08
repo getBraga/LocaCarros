@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LocaCarros.Application.DTOs.AlugueisDtos;
 using LocaCarros.Application.DTOs.CarrosDtos;
 using LocaCarros.Application.DTOs.MarcasDtos;
 using LocaCarros.Application.DTOs.ModelosDtos;
@@ -25,7 +26,9 @@ namespace LocaCarros.Application.Mappings
             CreateMap<Carro, CarroDTO>()
             .ForMember(dest => dest.MarcaNome, opt => opt.MapFrom(src => src.Modelo.Marca.Nome)).ReverseMap();
 
-
+            CreateMap<Aluguel, AluguelDTO>().ForMember(dest => dest.ModeloNome, opt => opt.MapFrom(src => src.Carro.Modelo.Nome)).ReverseMap();
+            CreateMap<Aluguel, AluguelDTOAdd>().ReverseMap();
+            CreateMap<Aluguel, AluguelDTOUpdate>().ReverseMap();
         }
     }
 }
