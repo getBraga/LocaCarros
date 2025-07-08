@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LocaCarros.Domain.Exceptions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace LocaCarros.API.Filters
@@ -7,10 +8,21 @@ namespace LocaCarros.API.Filters
     {
         public void OnException(ExceptionContext context)
         {
-            context.Result = new JsonResult(new { error = context.Exception.Message })
+            if (context.Exception is DomainException)
             {
-                StatusCode = StatusCodes.Status400BadRequest
-            };
+                context.Result = new JsonResult(new { error = context.Exception.Message })
+                {
+                    StatusCode = StatusCodes.Status400BadRequest
+                };
+            }
+            else
+            {
+                context.Result = new JsonResult(new { error = "Erro inesperado. Tente novamente mais tarde." })
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
+            }
+
             context.ExceptionHandled = true;
         }
     }
