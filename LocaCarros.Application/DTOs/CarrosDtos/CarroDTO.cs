@@ -18,7 +18,6 @@ namespace LocaCarros.Application.DTOs.CarrosDtos
       
         public int Ano { get; set; }
 
-       
         public string Cor { get; set; } = null!;
         public string DataFabricacao { get; set; } = string.Empty;
         public string Status { get; set; }  = string.Empty;

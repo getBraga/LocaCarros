@@ -32,10 +32,9 @@ namespace LocaCarros.Application.Services
             {
                 var venda = _mapper.Map<Venda>(vendaDtoAdd);
                 var carro = await _carroRepository.GetCarroByIdAsync(vendaDtoAdd.CarroId);
-                if (carro != null && carro.Status != EnumCarroStatus.Disponivel)
-                {
-                    throw new Exception($"O carro com a placa {carro.Placa} não está disponível para venda.");
-                }
+                carro?.ValidarDisponibilidadeParaVenda();
+
+
                 var vendaResult = await _unitOfWork.Vendas.CreateAsync(venda);
                 vendaResult.Carro.SetStatus(EnumCarroStatus.Vendido);
                 await _unitOfWork.Carros.UpdateAsync(vendaResult.Carro);

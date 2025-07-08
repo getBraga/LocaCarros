@@ -1,6 +1,7 @@
 ﻿
 
 using LocaCarros.Domain.Enuns;
+using LocaCarros.Domain.Exceptions;
 using System.Diagnostics.CodeAnalysis;
 
 namespace LocaCarros.Domain.Entities
@@ -79,6 +80,11 @@ namespace LocaCarros.Domain.Entities
                 throw new ArgumentException("A data de fabricação não pode ser no futuro.", nameof(dataFabricacao));
             }
             DataFabricacao = dataFabricacao;
+        }
+        public void ValidarDisponibilidadeParaVenda()
+        {
+            if (Status != EnumCarroStatus.Disponivel)
+                throw new DomainException($"O carro com a placa {Placa} não está disponível para venda!");
         }
         public void SetStatus(EnumCarroStatus status)
         {
