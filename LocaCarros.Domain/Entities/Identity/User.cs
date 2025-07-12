@@ -1,6 +1,7 @@
 ﻿using LocaCarros.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -19,6 +20,7 @@ namespace LocaCarros.Domain.Entities.Identity
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; private set; }
 
+        [ExcludeFromCodeCoverage]
         private User()
         {
             
@@ -32,16 +34,7 @@ namespace LocaCarros.Domain.Entities.Identity
             SetLastName(lastName);
         }
       
-        public User(string id, string email, string username, string firstName, string lastName, string phoneNumber)
-        {
-            SetUsername(username);
-            SetEmail(email);
-            SetPhoneNumber(phoneNumber);
-            SetFirstName(firstName);
-            SetLastName(lastName);
-          
-            Id = id;
-        }
+     
         private void SetUsername(string username)
         {
             ValidateRequiredField(username, "Nome de usuário");

@@ -16,6 +16,7 @@ public class VendaUnitTest
         Action action = () =>
         {
             Venda venda = new(10000m, DateTime.Now, carro);
+            venda.SetRowVersion(venda.RowVersion);
         };
         
         action.Should().NotThrow<ArgumentException>();

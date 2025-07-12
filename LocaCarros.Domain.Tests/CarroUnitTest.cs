@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using LocaCarros.Domain.Entities;
 using LocaCarros.Domain.Enuns;
+using LocaCarros.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,30 @@ namespace LocaCarros.Domain.Tests
                 var carro = new Carro(null!, 2026, "Vermelho", DateTime.Now, EnumCarroStatus.Disponivel, modelo);
             };
             action.Should().Throw<ArgumentException>().WithMessage("A placa não pode ser vazia ou nula.*").And.ParamName.Should().Be("placa");
+        }
+
+        [Fact]
+        public void DeveCriarCarro_ComStatusDiferenteDeDisponivel()
+        {
+            Modelo modelo = new("Fusca", "2023", 1.0m, EnumTipoCarroceria.Hatch, new Marca("Volkswagen"));
+            Action action = () =>
+            {
+                var carro = new Carro("FAX123", 2026, "Vermelho", DateTime.Now, EnumCarroStatus.Disponivel, modelo);
+                carro.ValidarDisponibilidadeParaVenda();
+            };
+            action.Should().NotThrow<DomainException>();
+        }
+        [Fact]
+        public void DeveCriarCarro_ComStatusDiferenteDeDisponivel_DeveLancarExcessao()
+        {
+            Modelo modelo = new("Fusca", "2023", 1.0m, EnumTipoCarroceria.Hatch, new Marca("Volkswagen"));
+            Action action = () =>
+            {
+                var carro = new Carro("FAX123", 2026, "Vermelho", DateTime.Now, EnumCarroStatus.Vendido, modelo);
+                carro.ValidarDisponibilidadeParaVenda();
+            };
+            action.Should().Throw<DomainException>()
+                      .Where(ex => ex.Message.Contains("não está disponível para venda"));
         }
         [Fact]
         public void CriarCarro_ComAnoInvalido_DeveLancarExcecao()
