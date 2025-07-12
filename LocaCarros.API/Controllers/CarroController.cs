@@ -1,12 +1,16 @@
 ﻿using LocaCarros.Application.DTOs.CarrosDtos;
 using LocaCarros.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace LocaCarros.API.Controllers
 {
+  
     [Route("api/[controller]")]
     [ApiController]
+ 
     public class CarroController : ControllerBase
     {
         private readonly ICarroService _carroService;
@@ -16,12 +20,15 @@ namespace LocaCarros.API.Controllers
         }
 
         [HttpGet]
+
+        [Authorize]
         public async Task<ActionResult<IEnumerable<CarroDTO>>> Get()
         {
+           
             var carros = await _carroService.GetCarrosAsync();
             return Ok(carros);
         }
-
+       
         [HttpGet("{id}")]
         public async Task<ActionResult<CarroDTO>> Get(int id)
         {

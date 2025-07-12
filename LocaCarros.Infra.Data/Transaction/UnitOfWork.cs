@@ -1,4 +1,4 @@
-﻿using LocaCarros.Application.Interfaces;
+﻿
 using LocaCarros.Domain.Interfaces;
 using LocaCarros.Infra.Data.Context;
 
@@ -31,11 +31,21 @@ namespace LocaCarros.Infra.Data.Transaction
 
         public async Task CommitAsync()
         {
+            if (_transaction == null)
+            {
+                throw new InvalidOperationException("Transaction has not been started.");
+            }
+
             await _transaction.CommitAsync();
         }
 
         public async Task RollbackAsync()
         {
+            if (_transaction == null)
+            {
+                throw new InvalidOperationException("Transaction has not been started.");
+            }
+
             await _transaction.RollbackAsync();
         }
 

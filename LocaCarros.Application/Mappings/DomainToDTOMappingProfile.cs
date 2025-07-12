@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using LocaCarros.Application.DTOs.AlugueisDtos;
+using LocaCarros.Application.DTOs.Authenticate;
 using LocaCarros.Application.DTOs.CarrosDtos;
 using LocaCarros.Application.DTOs.MarcasDtos;
 using LocaCarros.Application.DTOs.ModelosDtos;
 using LocaCarros.Application.DTOs.VendasDtos;
 using LocaCarros.Domain.Entities;
+using LocaCarros.Domain.Entities.Identity;
 
 namespace LocaCarros.Application.Mappings
 {
@@ -12,6 +14,7 @@ namespace LocaCarros.Application.Mappings
     {
         public DomainToDTOMappingProfile()
         {
+           
             CreateMap<Marca, MarcaDTO>().ReverseMap();
             CreateMap<Marca, MarcaDTOAdd>().ReverseMap();
             CreateMap<Modelo, ModeloDTO>().ReverseMap();
@@ -29,6 +32,9 @@ namespace LocaCarros.Application.Mappings
             CreateMap<Aluguel, AluguelDTO>().ForMember(dest => dest.ModeloNome, opt => opt.MapFrom(src => src.Carro.Modelo.Nome)).ReverseMap();
             CreateMap<Aluguel, AluguelDTOAdd>().ReverseMap();
             CreateMap<Aluguel, AluguelDTOUpdate>().ReverseMap();
+            CreateMap<User,LoginDTO>().ReverseMap();
+            CreateMap<User, RegisterDTO>().ReverseMap();
+            CreateMap<User, UserTokenDTO>().ReverseMap();
         }
     }
 }

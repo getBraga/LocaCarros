@@ -2,7 +2,10 @@
 using LocaCarros.API.Filters;
 using LocaCarros.Application.Mappings;
 using LocaCarros.Infra.IOC;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,8 +15,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddInfrastructureAPI(builder.Configuration);
-//builder.Services.AddEndpointsApiExplorer(); // Habilita a geração de endpoints para Swagger
-builder.Services.AddInfrastructureSwagger(); 
+
+builder.Services.AddInfrastructureSwagger();
+
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddControllers(options =>
@@ -23,17 +28,17 @@ builder.Services.AddControllers(options =>
 var app = builder.Build();
 
 
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "LocaCarros.API v1");
-    c.RoutePrefix = string.Empty;
-});
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.MapOpenApi();
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "LocaCarros.API v1");
+        c.RoutePrefix = string.Empty;
+    });
+
 }
 else
 {
@@ -57,9 +62,11 @@ app.UseExceptionHandler(errorApp =>
         }
     });
 });
+app.UseStatusCodePages();
+app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
