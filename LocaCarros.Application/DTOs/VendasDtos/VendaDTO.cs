@@ -10,7 +10,7 @@ namespace LocaCarros.Application.DTOs.VendasDtos
 {
     public class VendaDTO
     {
-        public int Id { get; private set; }
+        public int Id { get;  set; }
         public decimal ValorVenda { get;  set; }
         public string DataVenda { get;  set; } = string.Empty;
         public string CarroPlaca { get;  set; } = null!;

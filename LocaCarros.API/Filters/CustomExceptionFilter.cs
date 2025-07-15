@@ -8,22 +8,25 @@ namespace LocaCarros.API.Filters
     {
         public void OnException(ExceptionContext context)
         {
-            if (context.Exception is DomainException)
+            var (statusCode, message) = MapException(context.Exception);
+          
+           
+            context.Result = new JsonResult(new { error = message })
             {
-                context.Result = new JsonResult(new { error = context.Exception.Message })
-                {
-                    StatusCode = StatusCodes.Status400BadRequest
-                };
-            }
-            else
-            {
-                context.Result = new JsonResult(new { error = "Erro inesperado. Tente novamente mais tarde." })
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError
-                };
-            }
+                StatusCode = statusCode
+            };
 
             context.ExceptionHandled = true;
+        }
+
+        private static (int statusCode, string message) MapException(Exception ex)
+        {
+            return ex switch
+            {
+                DomainException domainEx => (StatusCodes.Status400BadRequest, domainEx.Message),
+                KeyNotFoundException keyNotFoundEx => (StatusCodes.Status404NotFound, keyNotFoundEx.Message),
+                _ => (StatusCodes.Status500InternalServerError, "Erro inesperado. Tente novamente mais tarde.")
+            };
         }
     }
 }

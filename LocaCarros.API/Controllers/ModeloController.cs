@@ -18,7 +18,7 @@ namespace LocaCarros.API.Controllers
         public async Task<ActionResult<IEnumerable<ModeloDTO>>> Get()
         {
             var modelos = await _modeloService.GetModelosAsync();
-            return Ok(modelos);
+            return Ok(new {success= true, data = modelos });
         }
 
         [HttpGet("{id}")]
@@ -27,26 +27,31 @@ namespace LocaCarros.API.Controllers
             var modelo = await _modeloService.GetByIdAsync(id);
             if (modelo == null)
             {
-                return NotFound(new { message = "Nenhum modelo encontrado!" });
+                return NotFound(new { sucess = false, message = "Nenhum modelo encontrado!" });
             }
-            return Ok(modelo);
+            return Ok(new { success = true, data = modelo }); ;
         }
 
         [HttpPost]
         public async Task<ActionResult<ModeloDTO>> Post(ModeloDTOAdd modeloDtoAdd)
         {
             var modelo = await _modeloService.AddAsync(modeloDtoAdd);
+            if (modelo == null)
+            {
+                return BadRequest(new { message = "Falha ao criar modelo!" });
+            }
             return Ok(modelo);
         }
         [HttpPut("{id}")]
-        public async Task<ActionResult<ModeloDTO>> Update(int id, ModeloDTOUpdate modeloDto)
+        public async Task<ActionResult<ModeloDTO>> Put(int id, ModeloDTOUpdate modeloDto)
         {
             if (id != modeloDto.Id)
             {
-                return BadRequest(new { message = "Id do modelo não confere!" });
+                return BadRequest(new {sucess= false, message = "Id do modelo não confere!" });
             }
             var modelo = await _modeloService.UpdateAsync(modeloDto);
-            return Ok(modelo);
+
+            return Ok(new { success = true, data = modelo });
         }
         [HttpDelete("{id}")]
         public async Task<ActionResult<ModeloDTO>> Delete(int id)
@@ -54,9 +59,9 @@ namespace LocaCarros.API.Controllers
             var modeloDelete = await _modeloService.RemoveAsync(id);
             if (!modeloDelete)
             {
-                return NotFound(new { message = "Modelo não encontrado!" });
+                return NotFound(new { sucess = false, message = "Modelo não encontrado!" });
             }
-            return Ok(new { message = "Modelo removido com sucesso!" });
+            return Ok(new { sucess = true, message = "Modelo removido com sucesso!" });
         }
     }
 }
