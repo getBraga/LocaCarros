@@ -48,6 +48,11 @@ namespace LocaCarros.Infra.Data.Repositories
 
         public async Task<Modelo> UpdateAsync(Modelo modelo)
         {
+            var existingModelo = await _contextModelo.Modelos.FindAsync(modelo.Id);
+           if (existingModelo == null)
+            {
+                throw new KeyNotFoundException("Modelo não encontrado.");
+            }
             _contextModelo.Modelos.Update(modelo);
             await _contextModelo.SaveChangesAsync();
             return modelo;
