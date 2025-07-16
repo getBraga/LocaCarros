@@ -10,7 +10,7 @@ namespace LocaCarros.API.Controllers
   
     [Route("api/[controller]")]
     [ApiController]
- 
+    [Authorize]
     public class CarroController : ControllerBase
     {
         private readonly ICarroService _carroService;
@@ -21,7 +21,7 @@ namespace LocaCarros.API.Controllers
 
         [HttpGet]
 
-        [Authorize]
+       
         public async Task<ActionResult<IEnumerable<CarroDTO>>> Get()
         {
            

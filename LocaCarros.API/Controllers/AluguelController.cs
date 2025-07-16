@@ -1,6 +1,7 @@
 ﻿using LocaCarros.Application.DTOs.AlugueisDtos;
 using LocaCarros.Application.Interfaces;
 using LocaCarros.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,7 @@ namespace LocaCarros.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AluguelController : ControllerBase
     {
         private readonly IAluguelService _aluguelService;

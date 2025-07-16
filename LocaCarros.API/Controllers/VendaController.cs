@@ -1,6 +1,7 @@
 ﻿using LocaCarros.Application.DTOs.VendasDtos;
 using LocaCarros.Application.Interfaces;
 using LocaCarros.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ namespace LocaCarros.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class VendaController : ControllerBase
     {
         private IVendaService _vendaService;

@@ -1,12 +1,14 @@
 ﻿using LocaCarros.Application.DTOs.MarcasDtos;
 using LocaCarros.Application.Interfaces;
 using LocaCarros.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LocaCarros.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class MarcaController : ControllerBase
     {
         private readonly IMarcaService _marcaService;

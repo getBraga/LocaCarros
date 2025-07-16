@@ -1,5 +1,6 @@
 ﻿using LocaCarros.Application.DTOs.ModelosDtos;
 using LocaCarros.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +8,7 @@ namespace LocaCarros.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ModeloController : ControllerBase
     {
         private readonly IModeloService _modeloService;
