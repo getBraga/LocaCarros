@@ -26,7 +26,7 @@ namespace LocaCarros.API.Tests
         {
             Email = "teste@locacarros.com",
             Username = "testeUser",
-            Password = "SenhaForte123!",
+            Password = "FakePasswordForUnitTest",
 
         };
         private void SimularUsuarioAutenticado(string email)
@@ -61,7 +61,7 @@ namespace LocaCarros.API.Tests
             var loginDto = new LoginDTO
             {
                 Email = "locacarros@email.com",
-                Password = "S&nh@Forte1"
+                Password = "FakePasswordForUnitTest"
             };
             _userServiceMock.Setup(s => s.AuthenticateAsync(loginDto)).ReturnsAsync(false);
             var userResult = await _userController.Login(loginDto);
@@ -75,7 +75,7 @@ namespace LocaCarros.API.Tests
             var loginDto = new LoginDTO
             {
                 Email = "locacarros@email.com",
-                Password = "S&nh@Forte1"
+                Password = "FakePasswordForUnitTest"
             };
             var tokenEsperado = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
             _userServiceMock.Setup(s => s.AuthenticateAsync(loginDto)).ReturnsAsync(true);
@@ -96,8 +96,8 @@ namespace LocaCarros.API.Tests
             var registerDto = new RegisterDTO
             {
                 Email = "locacarros@email.com",
-                Password = "S&nh@Forte1",
-                ConfirmPassword = "S&nh@Forte1",
+                Password = "FakePasswordForUnitTest",
+                ConfirmPassword = "FakePasswordForUnitTest",
                 FirstName = "Loca",
                 LastName = "Carros",
                 Username = "locacarrosUser"
@@ -116,8 +116,8 @@ namespace LocaCarros.API.Tests
             var registerDto = new RegisterDTO
             {
                 Email = "locacarros@email.com",
-                Password = "S&nh@Forte1",
-                ConfirmPassword = "S&nh@Forte1",
+                Password = "FakePasswordForUnitTest",
+                ConfirmPassword = "FakePasswordForUnitTest",
                 FirstName = "Loca",
                 LastName = "Carros",
                 Username = "locacarrosUser"
