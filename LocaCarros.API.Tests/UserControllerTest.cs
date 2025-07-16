@@ -26,6 +26,7 @@ namespace LocaCarros.API.Tests
         {
             Email = "teste@locacarros.com",
             Username = "testeUser",
+            // gg-ignore
             Password = "FakePasswordForUnitTest",
 
         };
@@ -61,6 +62,7 @@ namespace LocaCarros.API.Tests
             var loginDto = new LoginDTO
             {
                 Email = "locacarros@email.com",
+                // gg-ignore
                 Password = "FakePasswordForUnitTest"
             };
             _userServiceMock.Setup(s => s.AuthenticateAsync(loginDto)).ReturnsAsync(false);
@@ -75,6 +77,7 @@ namespace LocaCarros.API.Tests
             var loginDto = new LoginDTO
             {
                 Email = "locacarros@email.com",
+                // gg-ignore
                 Password = "FakePasswordForUnitTest"
             };
             var tokenEsperado = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
@@ -96,7 +99,9 @@ namespace LocaCarros.API.Tests
             var registerDto = new RegisterDTO
             {
                 Email = "locacarros@email.com",
+                // gg-ignore
                 Password = "FakePasswordForUnitTest",
+                // gg-ignore
                 ConfirmPassword = "FakePasswordForUnitTest",
                 FirstName = "Loca",
                 LastName = "Carros",
@@ -116,7 +121,9 @@ namespace LocaCarros.API.Tests
             var registerDto = new RegisterDTO
             {
                 Email = "locacarros@email.com",
+                // gg-ignore
                 Password = "FakePasswordForUnitTest",
+                // gg-ignore
                 ConfirmPassword = "FakePasswordForUnitTest",
                 FirstName = "Loca",
                 LastName = "Carros",
