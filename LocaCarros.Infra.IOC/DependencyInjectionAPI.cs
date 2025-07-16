@@ -14,10 +14,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace LocaCarros.Infra.IOC
 {
+    [ExcludeFromCodeCoverage]
     public static class DependencyInjectionAPI
     {
         public static IServiceCollection AddInfrastructureAPI(this IServiceCollection services, 

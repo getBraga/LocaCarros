@@ -2,12 +2,14 @@
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace LocaCarros.Infra.IOC
 {
+    [ExcludeFromCodeCoverage]
     public static class DependencyInjectionSwagger
     {
         public static IServiceCollection AddInfrastructureSwagger(this IServiceCollection services)
