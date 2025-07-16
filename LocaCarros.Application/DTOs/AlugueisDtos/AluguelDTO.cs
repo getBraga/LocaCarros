@@ -9,7 +9,7 @@ namespace LocaCarros.Application.DTOs.AlugueisDtos
 {
     public class AluguelDTO
     {
-        public int Id { get; private set; }
+        public int Id { get;  set; }
 
         public decimal ValorAluguel { get;  set; }
         public string DataInicio { get;  set; } = string.Empty;

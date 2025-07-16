@@ -26,49 +26,49 @@ namespace LocaCarros.API.Controllers
         {
            
             var carros = await _carroService.GetCarrosAsync();
-            return Ok(carros);
+            return Ok(new {success=true, data = carros });
         }
        
         [HttpGet("{id}")]
         public async Task<ActionResult<CarroDTO>> Get(int id)
         {
             var carro = await _carroService.GetCarroByIdAsync(id);
-            if (carro == null) return NotFound("O carro não foi encontrado!");
-            return Ok(carro);
+            if (carro == null) return NotFound(new {success=false, message= "O carro não foi encontrado!" });
+            return Ok(new {success = true, data = carro });
         }
 
         [HttpPost]
         public async Task<ActionResult<CarroDTO>> Post(CarroDTOAdd carroDtoAdd)
         {
             var carro = await _carroService.CreateAsync(carroDtoAdd);
-            return Ok(carro);
+            return Ok(new {success = true, data = carro });
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult<bool>> Delete(int id)
         {
             var result = await _carroService.DeleteAsync(id);
             if (!result)
             {
-                return NotFound("Carro não encontrado!");
+                return NotFound(new {success=false, message= "Carro não encontrado!" });
             }
-            return Ok("Carro removido com sucesso!");
+            return Ok(new {success=true, message= "Carro removido com sucesso!" });
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<CarroDTO>> Update(int id, CarroDTOUpdate carroDto)
+        public async Task<ActionResult<CarroDTO>> Put(int id, CarroDTOUpdate carroDto)
         {
             if (id != carroDto.Id)
             {
-                return BadRequest("Id do carro não confere!");
+                return BadRequest(new {success = false, message = "Id do carro não confere!" });
             }
 
             var updatedCarro = await _carroService.UpdateAsync(carroDto);
             if(updatedCarro == null)
             {
-                return NotFound("Carro não encontrado!");
+                return NotFound(new { success = false, message = "Carro não encontrado!" });
             }   
-            return Ok(updatedCarro);
+            return Ok(new {success = true, data = updatedCarro});
 
         }
     }

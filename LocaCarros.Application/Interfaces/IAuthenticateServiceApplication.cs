@@ -13,6 +13,6 @@ namespace LocaCarros.Application.Interfaces
         Task<bool> RegisterUserAsync(RegisterDTO registerDTO);
         Task<UserTokenDTO> GetUser(string email);
         string GenerateToken(string email);
-        Task LogoutAsync();
+      
     }
 }

@@ -13,6 +13,5 @@ namespace LocaCarros.Domain.Account
         Task<User> GetUserAsync(string email);
         Task<bool> RegisterUser(User user, string password);
         string GenerateToken(string email);
-        Task Logout();
     }
 }

@@ -43,11 +43,6 @@ namespace LocaCarros.Application.Services
             return token;
         }
 
-        public async Task LogoutAsync()
-        {
-           await _authenticateServiceInfra.Logout();
-        }
-
         public async Task<bool> RegisterUserAsync(RegisterDTO registerDTO)
         {
             var registerMapper = _mapper.Map<User>(registerDTO);

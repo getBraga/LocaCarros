@@ -28,37 +28,32 @@ namespace LocaCarros.Infra.Data.Identity
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
-        public async Task<User> GetUserAsync(string email) {
+        public async Task<User> GetUserAsync(string email)
+        {
 
             var user = await _userManager.FindByEmailAsync(email);
-         
+
             if (user == null)
                 throw new DomainException("O Usuário não foi encontrado!");
             var userMap = new User(user.Email!, user.UserName!, user.FirstName, user.LastName, user.PhoneNumber!);
-           
+
             return userMap;
         }
         public async Task<bool> Authenticate(string email, string password)
         {
-       
+
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
                 return false;
-       
+
             var passwordValid = await _userManager.CheckPasswordAsync(user, password);
             if (!passwordValid)
                 return false;
 
             //await _signInManager.SignInAsync(user, isPersistent: false);
-        
+
             return true;
         }
-
-        public async Task Logout()
-        {
-            await _signInManager.SignOutAsync();
-        }
-
 
         public async Task<bool> RegisterUser(User user, string password)
         {

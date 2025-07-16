@@ -35,28 +35,22 @@ namespace LocaCarros.API.Controllers
             if (result)
             {
                 var token = _authenticateServiceApplication.GenerateToken(loginDTO.Email);
-                return Ok(token);
+                return Ok(new {success = true, data = token });
             }
-            return Unauthorized("Authentication failed.");
+            return Unauthorized(new { success = false, message = "Authentication failed." });
         }
 
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register(RegisterDTO registerDTO)
+        public async Task<ActionResult<bool>> Register(RegisterDTO registerDTO)
         {
             var result = await _authenticateServiceApplication.RegisterUserAsync(registerDTO);
             if (result)
             {
-                return Ok("User registered successfully.");
+                return Ok(new {success = true, message= "Usuário cadastrado com sucesso!" });
             }
-            return BadRequest("Registration failed.");
+            return BadRequest(new {success= false, message="Erro ao cadastrar usuário!"});
         }
-        [HttpGet]
-        [Route("logout")]
-        public async Task<IActionResult> Logout()
-        {
-            await _authenticateServiceApplication.LogoutAsync();
-            return Ok("User logged out successfully.");
-        }
+       
     }
 }

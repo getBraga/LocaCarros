@@ -22,7 +22,7 @@ namespace LocaCarros.API.Tests
             _vendaController = new VendaController(_vendaServiceMock.Object);
 
         }
-
+        private static readonly DateTime dateNow = DateTime.Now;
         private static VendaDTO GetMockVendaDTO() => new()
         {
             Id = 1,
@@ -30,7 +30,7 @@ namespace LocaCarros.API.Tests
             CarroCor = "Preto",
             CarroDataFabricacao = "2020-01-01",
             CarroPlaca = "ABC-1234",
-            DataVenda = "2023-10-01",
+            DataVenda = dateNow.ToString(),
             CarroStatus = "Disponível",
             ModeloNome = "Fusca",
             ValorVenda = 30000.00m
@@ -96,7 +96,7 @@ namespace LocaCarros.API.Tests
             {
                 Id = 1,
                 CarroId = 1,
-                DataVenda = "2023-10-01",
+                DataVenda = dateNow.ToString(),
                 ValorVenda = 30000.00m
             };
             _vendaServiceMock.Setup(v => v.UpdateAsync(vendaUpdate)).ReturnsAsync(GetMockVendaDTO());
@@ -123,7 +123,7 @@ namespace LocaCarros.API.Tests
             {
                 Id = 1,
                 CarroId = 1,
-                DataVenda = "2023-10-01",
+                DataVenda = dateNow.ToString(),
                 ValorVenda = 30000.00m
             };
             _vendaServiceMock.Setup(v => v.UpdateAsync(vendaUpdate)).ReturnsAsync((VendaDTO?)null!);
@@ -138,7 +138,7 @@ namespace LocaCarros.API.Tests
             var vendaAdd = new VendaDTOAdd
             {
                 CarroId = 1,
-                DataVenda = "2023-10-01",
+                DataVenda = dateNow.ToString(),
                 ValorVenda = 30000.00m
             };
             _vendaServiceMock.Setup(v => v.CreateAsync(vendaAdd)).ReturnsAsync(GetMockVendaDTO());
