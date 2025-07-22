@@ -102,5 +102,6 @@ namespace LocaCarros.Domain.Tests
             };
             action.Should().Throw<InvalidOperationException>().WithMessage("O Aluguel deve conter um Id válido.");
         }
+        
     }
 }

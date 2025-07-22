@@ -86,6 +86,11 @@ namespace LocaCarros.Domain.Entities
             if (Status != EnumCarroStatus.Disponivel)
                 throw new DomainException($"O carro com a placa {Placa} não está disponível para venda!");
         }
+        public void ValidarDisponibilidadeParaAluguel()
+        {
+            if (Status != EnumCarroStatus.Disponivel)
+                throw new DomainException($"O carro com a placa {Placa} não está disponível para aluguel!");
+        }
         public void SetStatus(EnumCarroStatus status)
         {
             if (!Enum.IsDefined(status))

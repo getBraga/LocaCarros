@@ -10,5 +10,6 @@ namespace LocaCarros.Domain.Interfaces
         Task<Modelo> UpdateAsync(Modelo modelo);
         Task<bool> DeleteAsync(Modelo modelo);
         Task<IEnumerable<Modelo>> GetModelosByMarcaIdAsync(int marcaId);
+        Task<Modelo?> GetModeloByNomeAsync(string nome);
     }
 }

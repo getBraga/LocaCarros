@@ -13,7 +13,7 @@ namespace LocaCarros.Infra.Data.EntitiesConfiguration
     {
         public void Configure(EntityTypeBuilder<Venda> builder)
         {
-            IEntityTypeConfiguration<Carro> carroConfiguration = new CarroConfiguration();
+         
             builder.HasKey(v => v.Id);
             builder.Property(v => v.DataVenda).IsRequired();
             builder.Property(v => v.ValorVenda).IsRequired().HasColumnType("decimal(18,2)");

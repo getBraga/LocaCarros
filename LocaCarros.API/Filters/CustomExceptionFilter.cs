@@ -11,7 +11,7 @@ namespace LocaCarros.API.Filters
             var (statusCode, message) = MapException(context.Exception);
           
            
-            context.Result = new JsonResult(new { error = message })
+            context.Result = new JsonResult(new { success = false, error = message })
             {
                 StatusCode = statusCode
             };

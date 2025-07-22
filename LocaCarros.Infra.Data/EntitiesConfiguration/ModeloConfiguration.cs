@@ -18,6 +18,7 @@ namespace LocaCarros.Infra.Data.EntitiesConfiguration
             builder.Property(m => m.Versao).IsRequired().HasMaxLength(50);
             builder.Property(m => m.Motorizacao).IsRequired().HasColumnType("decimal(5,2)");
             builder.Property(m => m.TipoCarroceria).IsRequired();
+            builder.HasIndex(m => m.Nome).IsUnique();
             builder.HasOne(m => m.Marca).WithMany().HasForeignKey(m => m.MarcaId).IsRequired();
         }
     }

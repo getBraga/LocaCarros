@@ -43,9 +43,32 @@ namespace LocaCarros.Domain.Tests
             };
             action.Should().Throw<ArgumentException>().WithMessage("A placa não pode ser vazia ou nula.*").And.ParamName.Should().Be("placa");
         }
-
         [Fact]
-        public void DeveCriarCarro_ComStatusDiferenteDeDisponivel()
+        public void DeveCriarCarro_ComStatusDiferenteDeDisponivelParaAluguel_DeveCriar()
+        {
+            Modelo modelo = new("Fusca", "2023", 1.0m, EnumTipoCarroceria.Hatch, new Marca("Volkswagen"));
+            Action action = () =>
+            {
+                var carro = new Carro("FAX123", 2026, "Vermelho", DateTime.Now, EnumCarroStatus.Disponivel, modelo);
+                carro.ValidarDisponibilidadeParaAluguel();
+            };
+            action.Should().NotThrow<DomainException>();
+                
+        }
+        [Fact]
+        public void DeveCriarCarro_ComStatusDiferenteDeDisponivelParaAluguel_DeveLancarExcessao()
+        {
+            Modelo modelo = new("Fusca", "2023", 1.0m, EnumTipoCarroceria.Hatch, new Marca("Volkswagen"));
+            Action action = () =>
+            {
+                var carro = new Carro("FAX123", 2026, "Vermelho", DateTime.Now, EnumCarroStatus.Alugado, modelo);
+                carro.ValidarDisponibilidadeParaAluguel();
+            };
+            action.Should().Throw<DomainException>().Where(ex => ex.Message.Contains("não está disponível para aluguel!"));
+                
+        }
+        [Fact]
+        public void DeveCriarCarro_ComStatusDiferenteDeDisponivelParaVenda_DeveCriar()
         {
             Modelo modelo = new("Fusca", "2023", 1.0m, EnumTipoCarroceria.Hatch, new Marca("Volkswagen"));
             Action action = () =>
@@ -54,9 +77,10 @@ namespace LocaCarros.Domain.Tests
                 carro.ValidarDisponibilidadeParaVenda();
             };
             action.Should().NotThrow<DomainException>();
+                     
         }
         [Fact]
-        public void DeveCriarCarro_ComStatusDiferenteDeDisponivel_DeveLancarExcessao()
+        public void DeveCriarCarro_ComStatusDiferenteDeDisponivelParaVenda_DeveLancarExcessao()
         {
             Modelo modelo = new("Fusca", "2023", 1.0m, EnumTipoCarroceria.Hatch, new Marca("Volkswagen"));
             Action action = () =>

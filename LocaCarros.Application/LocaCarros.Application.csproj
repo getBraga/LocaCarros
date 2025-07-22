@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LocaCarros.Domain\LocaCarros.Domain.csproj" />
+    <ProjectReference Include="..\LocaCarros.Infra.Data\LocaCarros.Infra.Data.csproj" />
   </ItemGroup>
 
 </Project>

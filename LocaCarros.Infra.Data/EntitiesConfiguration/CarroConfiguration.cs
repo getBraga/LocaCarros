@@ -13,7 +13,7 @@ namespace LocaCarros.Infra.Data.EntitiesConfiguration
     {
         public void Configure(EntityTypeBuilder<Carro> builder)
         {
-            IEntityTypeConfiguration<Modelo> modeloConfiguration = new ModeloConfiguration();
+       
             builder.HasKey(c => c.Id);
             builder.Property(c => c.Placa).IsRequired().HasMaxLength(10);
             builder.Property(c => c.Ano).IsRequired();
@@ -23,7 +23,8 @@ namespace LocaCarros.Infra.Data.EntitiesConfiguration
             builder.HasOne(c => c.Modelo)
                    .WithMany()
                    .HasForeignKey(c => c.ModeloId)
-                   .IsRequired();
+                   .IsRequired()
+                   .OnDelete(DeleteBehavior.Restrict);
 
 
             builder.HasMany(c => c.Alugueis)

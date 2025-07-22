@@ -18,10 +18,8 @@ namespace LocaCarros.Infra.Data.Repositories
         {
             _contextVenda.Add(venda);
             await _contextVenda.SaveChangesAsync();
-            var vendaCarro = await _contextVenda.Vendas
-         .Include(v => v.Carro)
-         .FirstAsync(v => v.Id == venda.Id);
-            return vendaCarro;
+           
+            return venda;
         }
 
         public async Task<bool> DeleteAsync(Venda venda)

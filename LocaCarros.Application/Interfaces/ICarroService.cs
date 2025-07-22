@@ -15,6 +15,10 @@ namespace LocaCarros.Application.Interfaces
         Task<IEnumerable<CarroDTO>> GetCarrosByModeloIdAsync(int modeloId);
         Task<CarroDTO> CreateAsync(CarroDTOAdd carro);
         Task<CarroDTO> UpdateAsync(CarroDTOUpdate carro);
+        Task AtualizarStatusDosCarrosAsync(Carro? carroAnterior, Carro novoCarro);
+        Task<Carro> GetEntidadeCarroByIdAsync(int id);
+        Task MarcarComoVendidoAsync(Carro carro);
+        Task ValidarDisponibilidadeDoCarroAsync(Carro carro);
         Task<bool> DeleteAsync(int id);
     }
 }

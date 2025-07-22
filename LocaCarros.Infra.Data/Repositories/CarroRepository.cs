@@ -1,5 +1,6 @@
 ﻿using LocaCarros.Domain.Entities;
 using LocaCarros.Domain.Interfaces;
+using LocaCarros.Domain.Enuns;
 using LocaCarros.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -57,6 +58,13 @@ namespace LocaCarros.Infra.Data.Repositories
             _contextCarro.Carros.Update(carro);
             await _contextCarro.SaveChangesAsync();
             return carro;
+        }
+
+        public async Task<IEnumerable<Carro>> UpdatesListAsync(IEnumerable<Carro> carros)
+        {
+            _contextCarro.Carros.UpdateRange(carros);
+            await _contextCarro.SaveChangesAsync();
+            return carros;
         }
     }
 }

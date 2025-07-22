@@ -14,10 +14,13 @@ namespace LocaCarros.Application.Services
     public class AluguelService : IAluguelService
     {
         private readonly IAluguelRepository _aluguelRepository;
+        private readonly ICarroRepository _carroRepository;
         private readonly IMapper _mapper;
-        public AluguelService(IAluguelRepository aluguelRepository, IMapper mapper)
+    
+        public AluguelService(IAluguelRepository aluguelRepository, ICarroRepository carroRepository,  IMapper mapper )
         {
             _aluguelRepository = aluguelRepository;
+            _carroRepository = carroRepository;
             _mapper = mapper;
         }
         public async Task<AluguelDTO> CreateAsync(AluguelDTOAdd aluguelDtoAdd)

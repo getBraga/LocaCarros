@@ -32,6 +32,12 @@ namespace LocaCarros.Infra.Data.Repositories
            return await _contextModelo.Modelos.FindAsync(id);
         }
 
+        public async Task<Modelo?> GetModeloByNomeAsync(string nome)
+        {
+            var modelo = await _contextModelo.Modelos.FirstOrDefaultAsync(m => m.Nome.Equals(nome, StringComparison.CurrentCultureIgnoreCase));
+            return modelo;
+        }
+
         public async Task<IEnumerable<Modelo>> GetModelosAsync()
         {
            return await _contextModelo.Modelos.Include(m => m.Marca)

@@ -14,7 +14,7 @@ namespace LocaCarros.Application.Interfaces
         Task<MarcaDTO> AddAsync(MarcaDTOAdd marcaDto);
         Task<MarcaDTO> UpdateAsync(MarcaDTO marcaDto);
         Task<bool> RemoveAsync(int id);
-        Task<bool> PodeDeletarMarcaAsync(int id);
+     
      
     }
 }

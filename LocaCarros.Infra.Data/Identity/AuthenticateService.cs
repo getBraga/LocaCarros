@@ -40,7 +40,7 @@ namespace LocaCarros.Infra.Data.Identity
             return userMap;
         }
         public async Task<bool> Authenticate(string email, string password)
-        {
+         {
 
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
@@ -90,7 +90,7 @@ namespace LocaCarros.Infra.Data.Identity
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SecretKey"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expiration = DateTime.UtcNow.AddMinutes(1);
+            var expiration = DateTime.UtcNow.AddMinutes(60);
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["JWT:Issuer"],
