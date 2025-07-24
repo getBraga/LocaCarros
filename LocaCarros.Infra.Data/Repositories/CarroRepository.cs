@@ -18,17 +18,16 @@ namespace LocaCarros.Infra.Data.Repositories
         {
             _contextCarro = contextCarro;
         }
-        public async Task<Carro> CreateAsync(Carro carro)
+        public  Task<Carro> CreateAsync(Carro carro)
         {
            _contextCarro.Add(carro);
-           await _contextCarro.SaveChangesAsync();
-           return carro;
+           return Task.FromResult(carro);
         }
 
-        public async Task<bool> DeleteAsync(Carro carro)
+        public  Task<bool> DeleteAsync(Carro carro)
         {
            _contextCarro.Remove(carro);
-           return await _contextCarro.SaveChangesAsync() > 0;
+             return Task.FromResult(true); ;
         }
 
         public async Task<Carro?> GetCarroByIdAsync(int id)
@@ -53,18 +52,16 @@ namespace LocaCarros.Infra.Data.Repositories
          
         }
 
-        public async Task<Carro> UpdateAsync(Carro carro)
+        public Task<Carro> UpdateAsync(Carro carro)
         {
             _contextCarro.Carros.Update(carro);
-            await _contextCarro.SaveChangesAsync();
-            return carro;
+            return Task.FromResult(carro);
         }
 
-        public async Task<IEnumerable<Carro>> UpdatesListAsync(IEnumerable<Carro> carros)
+        public Task<IEnumerable<Carro>> UpdatesListAsync(IEnumerable<Carro> carros)
         {
             _contextCarro.Carros.UpdateRange(carros);
-            await _contextCarro.SaveChangesAsync();
-            return carros;
+            return Task.FromResult(carros);
         }
     }
 }

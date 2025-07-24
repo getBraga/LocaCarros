@@ -14,17 +14,16 @@ namespace LocaCarros.Infra.Data.Repositories
     {
         private readonly ApplicationDbContext _contextModelo = contextModelo;
 
-        public async Task<Modelo> CreateAsync(Modelo modelo)
+        public Task<Modelo> CreateAsync(Modelo modelo)
         {
             _contextModelo.Add(modelo);
-            await _contextModelo.SaveChangesAsync();
-            return modelo;
+            return Task.FromResult(modelo);
         }
 
-        public async Task<bool> DeleteAsync(Modelo modelo)
+        public  Task<bool> DeleteAsync(Modelo modelo)
         {
             _contextModelo.Remove(modelo);
-            return await _contextModelo.SaveChangesAsync() > 0;
+            return Task.FromResult(true);
         }
 
         public async Task<Modelo?> GetModeloByIdAsync(int id)
@@ -52,16 +51,10 @@ namespace LocaCarros.Infra.Data.Repositories
                 .Where(m => m.MarcaId == marcaId).ToListAsync(); ;
         }
 
-        public async Task<Modelo> UpdateAsync(Modelo modelo)
+        public Task<Modelo> UpdateAsync(Modelo modelo)
         {
-            var existingModelo = await _contextModelo.Modelos.FindAsync(modelo.Id);
-           if (existingModelo == null)
-            {
-                throw new KeyNotFoundException("Modelo não encontrado.");
-            }
             _contextModelo.Modelos.Update(modelo);
-            await _contextModelo.SaveChangesAsync();
-            return modelo;
+            return Task.FromResult(modelo);
         }
     }
 }

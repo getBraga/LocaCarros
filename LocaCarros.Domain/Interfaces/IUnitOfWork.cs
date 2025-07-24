@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace LocaCarros.Domain.Interfaces
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
         IVendaRepository Vendas { get; }
         ICarroRepository Carros { get; }
+        IAluguelRepository Alugueis { get; }
+        IMarcaRepository Marcas { get; }
+        IModeloRepository Modelos { get; }
         Task BeginTransactionAsync();
         Task CommitAsync();
         Task RollbackAsync();

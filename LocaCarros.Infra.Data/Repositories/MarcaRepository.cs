@@ -13,18 +13,17 @@ namespace LocaCarros.Infra.Data.Repositories
         {
             _contextMarca = contextMarca;
         }
-        public async Task<Marca> CreateAsync(Marca marca)
+        public  Task<Marca> CreateAsync(Marca marca)
         {
             _contextMarca.Add(marca);
-            await _contextMarca.SaveChangesAsync();
-            return marca;
+            return Task.FromResult(marca);
 
         }
 
-        public async Task<bool> DeleteAsync(Marca marca)
+        public  Task<bool> DeleteAsync(Marca marca)
         {
             _contextMarca.Remove(marca);
-            return await _contextMarca.SaveChangesAsync() > 0;
+            return Task.FromResult(true);
         }
 
         public async Task<Marca?> GetMarcaByIdAsync(int id)
@@ -39,11 +38,10 @@ namespace LocaCarros.Infra.Data.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Marca> UpdateAsync(Marca marca)
+        public  Task<Marca> UpdateAsync(Marca marca)
         {
             _contextMarca.Marcas.Update(marca);
-            await _contextMarca.SaveChangesAsync();
-            return marca;
+            return Task.FromResult(marca);
         }
     }
 }

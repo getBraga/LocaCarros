@@ -14,18 +14,17 @@ namespace LocaCarros.Infra.Data.Repositories
             _contextVenda = contextVenda;
         }
 
-        public async Task<Venda> CreateAsync(Venda venda)
+        public  Task<Venda> CreateAsync(Venda venda)
         {
             _contextVenda.Add(venda);
-            await _contextVenda.SaveChangesAsync();
            
-            return venda;
+            return Task.FromResult(venda);
         }
 
-        public async Task<bool> DeleteAsync(Venda venda)
+        public Task<bool> DeleteAsync(Venda venda)
         {
             _contextVenda.Remove(venda);
-            return await _contextVenda.SaveChangesAsync() > 0;
+            return Task.FromResult(true);
         }
 
         public async Task<Venda?> GetVendaByIdAsync(int id)
@@ -52,11 +51,10 @@ namespace LocaCarros.Infra.Data.Repositories
 
         }
 
-        public async Task<Venda> UpdateAsync(Venda venda)
+        public Task<Venda> UpdateAsync(Venda venda)
         {
             _contextVenda.Vendas.Update(venda);
-            await _contextVenda.SaveChangesAsync();
-            return venda;
+            return Task.FromResult(venda);
         }
     }
 }

@@ -17,11 +17,10 @@ namespace LocaCarros.Infra.Data.Repositories
         {
             _contextAluguel = contextAluguel;
         }
-        public async Task<Aluguel> CreateAsync(Aluguel aluguel)
+        public  Task<Aluguel> CreateAsync(Aluguel aluguel)
         {
             _contextAluguel.Add(aluguel);
-            await _contextAluguel.SaveChangesAsync();
-            return aluguel;
+            return Task.FromResult(aluguel);
         }
 
         public async Task<bool> DeleteAsync(Aluguel aluguel)
@@ -57,11 +56,10 @@ namespace LocaCarros.Infra.Data.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<Aluguel> UpdateAsync(Aluguel aluguel)
+        public Task<Aluguel> UpdateAsync(Aluguel aluguel)
         {
             _contextAluguel.Alugueis.Update(aluguel);
-            await _contextAluguel.SaveChangesAsync();
-            return aluguel;
+            return Task.FromResult(aluguel);
         }
     }
 }

@@ -14,16 +14,24 @@ namespace LocaCarros.Infra.Data.Transaction
 
         public UnitOfWork(ApplicationDbContext context,
                           IVendaRepository vendaRepository,
-                          ICarroRepository carroRepository)
+                          ICarroRepository carroRepository,
+                          IAluguelRepository aluguelRepository,
+                            IMarcaRepository marcaRepository,
+                          IModeloRepository modelos)
         {
             _context = context;
             Vendas = vendaRepository;
             Carros = carroRepository;
+            Marcas = marcaRepository;
+            Alugueis = aluguelRepository;
+            Modelos = modelos;
         }
 
         public IVendaRepository Vendas { get; private set; }
         public ICarroRepository Carros { get; private set; }
-
+        public IAluguelRepository Alugueis { get; private set; }
+        public IMarcaRepository Marcas { get; private set; }
+        public IModeloRepository Modelos { get; private set; }
         public async Task BeginTransactionAsync()
         {
             _transaction = await _context.Database.BeginTransactionAsync();
@@ -31,12 +39,26 @@ namespace LocaCarros.Infra.Data.Transaction
 
         public async Task CommitAsync()
         {
+
             if (_transaction == null)
             {
                 throw new InvalidOperationException("Transaction has not been started.");
             }
 
-            await _transaction.CommitAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+                await _transaction.CommitAsync();
+            }
+            catch
+            {
+                await _transaction.RollbackAsync();
+                throw;
+            }
+            finally
+            {
+                await _transaction.DisposeAsync();
+            }
         }
 
         public async Task RollbackAsync()
@@ -47,6 +69,7 @@ namespace LocaCarros.Infra.Data.Transaction
             }
 
             await _transaction.RollbackAsync();
+            await _transaction.DisposeAsync();
         }
 
         public void Dispose()
