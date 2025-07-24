@@ -91,6 +91,17 @@ namespace LocaCarros.Domain.Entities
             if (Status != EnumCarroStatus.Disponivel)
                 throw new DomainException($"O carro com a placa {Placa} não está disponível para aluguel!");
         }
+        public void ValidarHasModelo(Modelo? modelo) { 
+        
+            if(modelo == null)
+            {
+                throw new ArgumentNullException(nameof(modelo), "O modelo não pode ser nulo.");
+            }
+            if (ModeloId != modelo.Id)
+            {
+                throw new DomainException($"O carro com a placa {Placa} não pertence ao modelo {modelo.Nome}!");
+            }
+        }
         public void SetStatus(EnumCarroStatus status)
         {
             if (!Enum.IsDefined(status))
@@ -105,6 +116,8 @@ namespace LocaCarros.Domain.Entities
             ModeloId = modelo.Id;
             
         }
+
+        
       
     }
 }

@@ -41,19 +41,26 @@ namespace LocaCarros.Domain.Entities
         }
      
 
-        private void SetValorAluguel(decimal valorAluguel)
+        public void SetValorAluguel(decimal valorAluguel)
         {
             if (valorAluguel <= 0)
                 throw new ArgumentException("O valor do aluguel deve ser maior que zero.", nameof(valorAluguel));
             ValorAluguel = valorAluguel;
         }
-        private void SetDataInicio(DateTime dataInicio)
+        public void SetDataInicio(DateTime dataInicio)
         {
             if (dataInicio == default)
                 throw new ArgumentException("Data de início inválida.", nameof(dataInicio));
             DataInicio = dataInicio;
         }
-        private void SetDataDevolucao(DateTime dataDevolucao)
+        public void TrocarCarro(Carro novoCarro, DateTime dataInicio, DateTime dataFim, decimal valor)
+        {
+            SetCarro(novoCarro);
+            SetDataInicio(dataInicio);
+            SetDataDevolucao(dataFim);
+            SetValorAluguel(valor);
+        }
+        public void SetDataDevolucao(DateTime dataDevolucao)
         {
             if (dataDevolucao == default)
                 throw new ArgumentException("Data de devolucao é inválida.", nameof(dataDevolucao));
@@ -61,7 +68,7 @@ namespace LocaCarros.Domain.Entities
                 throw new ArgumentException("A data de devolução não pode ser anterior à data de início do aluguel.", nameof(dataDevolucao));
             DataDevolucao = dataDevolucao;
         }
-        private void SetCarro(Carro carro)
+        public void SetCarro(Carro carro)
         {
             Carro = carro ?? throw new ArgumentNullException(nameof(carro), "O carro não pode ser nulo.");
             CarroId = carro.Id;

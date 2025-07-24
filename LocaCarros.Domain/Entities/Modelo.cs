@@ -1,4 +1,5 @@
 ﻿using LocaCarros.Domain.Enuns;
+using LocaCarros.Domain.Exceptions;
 using System.Diagnostics.CodeAnalysis;
 
 
@@ -63,7 +64,17 @@ namespace LocaCarros.Domain.Entities
             Marca = marca ?? throw new ArgumentNullException(nameof(marca), "A marca não pode ser nula.");
             MarcaId = marca.Id;
         }
-
+        public void ValidarRemover(int modelosMarca)
+        {
+            if (modelosMarca > 0)
+                throw new DomainException("Não é possível excluir o modelo, pois existem marcas associadas a ele.");
+        }
+        public void ValidarModeloComMesmoNomePorId(int idAtual, int novoId)
+        {
+          
+               if(idAtual != novoId)
+                throw new DomainException("Já existe um modelo com esse nome.");
+        }
         public void Update(string nome, string versao, decimal motorizacao, EnumTipoCarroceria tipoCarroceria, Marca marca)
         {
             if (Id < 0)
@@ -75,5 +86,6 @@ namespace LocaCarros.Domain.Entities
             SetMarca(marca);
 
         }
+
     }
 }
