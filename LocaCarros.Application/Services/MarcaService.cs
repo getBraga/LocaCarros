@@ -9,68 +9,76 @@ namespace LocaCarros.Application.Services
 {
     public class MarcaService : IMarcaService
     {
-        private readonly IMarcaRepository _marcaRepository;
-        private readonly IModeloRepository _modeloRepository;
+  
         private readonly IMapper _mapper;
-        public MarcaService(IMarcaRepository marcaRepository, IMapper mapper, IModeloRepository modeloRepository)
+        private readonly IUnitOfWork _unitOfWork;
+        public MarcaService(IUnitOfWork unitOfWork, IMapper mapper, IModeloRepository modeloRepository)
         {
-            _marcaRepository = marcaRepository ;
-            _mapper = mapper ;
-            _modeloRepository = modeloRepository;
+            _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
         public async Task<MarcaDTO> AddAsync(MarcaDTOAdd marcaDto)
         {
             var marca = _mapper.Map<Marca>(marcaDto);
-            Marca result = await _marcaRepository.CreateAsync(marca);
+            Marca result = await _unitOfWork.Marcas.CreateAsync(marca);
             return _mapper.Map<Marca, MarcaDTO>(result);
         }
 
         public async Task<MarcaDTO?> GetByIdAsync(int id)
         {
-            var marca = await _marcaRepository.GetMarcaByIdAsync(id);
+            var marca = await _unitOfWork.Marcas.GetMarcaByIdAsync(id);
             if (marca == null)
             {
                 return null;
             }
-            var reult = _mapper.Map<Marca, MarcaDTO>(marca);
-            return reult;
+            var marcaDto = _mapper.Map<Marca, MarcaDTO>(marca);
+            return marcaDto;
 
         }
 
         public async Task<IEnumerable<MarcaDTO>> GetMarcasAsync()
         {
-            IEnumerable<Marca> marcas = await _marcaRepository.GetMarcasAsync();
+            IEnumerable<Marca> marcas = await _unitOfWork.Marcas.GetMarcasAsync();
             return _mapper.Map<IEnumerable<Marca>, IEnumerable<MarcaDTO>>(marcas);
         }
 
-        private async Task<bool> PodeDeletarMarcaAsync(int id)
+        private async Task<int> PodeDeletarMarcaAsync(int id)
         {
-           var marcaModelos = await _modeloRepository.GetModelosByMarcaIdAsync(id);
-          return marcaModelos == null || !marcaModelos.Any();
+            var marcaModelos = await _unitOfWork.Modelos.GetModelosByMarcaIdAsync(id);
+    
+            return marcaModelos.Count();
         }
 
-            public async Task<bool> RemoveAsync(int id)
+        public async Task<bool> RemoveAsync(int id)
+        {
+            try
             {
-                var marca = await _marcaRepository.GetMarcaByIdAsync(id);
+                await _unitOfWork.BeginTransactionAsync();
+                var marca = await _unitOfWork.Marcas.GetMarcaByIdAsync(id);
                 if (marca == null)
                 {
                     return false;
                 }
-                if (!await PodeDeletarMarcaAsync(id))
-                {
-                    throw new DomainException("Não é possível excluir marca com modelos.");
-                }
-         
-                bool resultMarca = await _marcaRepository.DeleteAsync(marca);
+                var quantidadeModelos = await PodeDeletarMarcaAsync(id);
+                marca.ValidarRemover(quantidadeModelos);
+
+                bool resultMarca = await _unitOfWork.Marcas.DeleteAsync(marca);
+                await _unitOfWork.CommitAsync();
                 return resultMarca;
             }
+            catch (DomainException)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
+        }
 
         public async Task<MarcaDTO> UpdateAsync(MarcaDTO marcaDto)
         {
             var marca = _mapper.Map<MarcaDTO, Marca>(marcaDto);
             marca.Update(marca.Nome);
-            var result = await _marcaRepository.UpdateAsync(marca);
-            
+            var result = await _unitOfWork.Marcas.UpdateAsync(marca);
+
             return _mapper.Map<Marca, MarcaDTO>(result);
         }
     }

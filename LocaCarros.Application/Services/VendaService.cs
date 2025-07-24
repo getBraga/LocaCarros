@@ -1,29 +1,26 @@
 ﻿using AutoMapper;
-using LocaCarros.Application.DTOs.CarrosDtos;
 using LocaCarros.Application.DTOs.VendasDtos;
 using LocaCarros.Application.Interfaces;
 using LocaCarros.Domain.Entities;
 using LocaCarros.Domain.Enuns;
 using LocaCarros.Domain.Exceptions;
 using LocaCarros.Domain.Interfaces;
+using System.Globalization;
 
 
 namespace LocaCarros.Application.Services
 {
     public class VendaService : IVendaService
     {
-        private readonly IVendaRepository _vendaRepository;
         private readonly IMapper _mapper;
-        private readonly ICarroRepository _carroRepository;
+     
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ICarroService _carroService;
-        public VendaService(IVendaRepository vendaRepository, IMapper mapper, ICarroRepository carroRepository, IUnitOfWork unitOfWork,  ICarroService carroService)
+        
+        public VendaService(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _vendaRepository = vendaRepository;
+          
             _mapper = mapper;
-            _carroRepository = carroRepository;
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-            _carroService = carroService;
         }
         public async Task<VendaDTO> CreateAsync(VendaDTOAdd vendaDtoAdd)
         {
@@ -32,17 +29,13 @@ namespace LocaCarros.Application.Services
             {
                 var dataVenda = ObterDataVendaValida(vendaDtoAdd.DataVenda);
 
-
-                var carro = await _carroService.GetEntidadeCarroByIdAsync(vendaDtoAdd.CarroId);
-                if (carro == null)
-                    throw new DomainException("Carro não encontrado");
-
+                var carro = await VerificarCarroPorId(vendaDtoAdd.CarroId);
                 var venda = _mapper.Map<Venda>(vendaDtoAdd);
                 venda.SetDataVenda(dataVenda);
                 venda.SetCarro(carro);
 
                 var vendaResult = await _unitOfWork.Vendas.CreateAsync(venda);
-                await _carroService.MarcarComoVendidoAsync(carro);
+                await MarcarComoVendido(carro);
                 await _unitOfWork.CommitAsync();
 
                 return _mapper.Map<VendaDTO>(vendaResult);
@@ -59,32 +52,33 @@ namespace LocaCarros.Application.Services
             }
         }
 
-
-        private async Task<Venda?> VendaExistsAsync(int id)
+        private async Task<Carro> VerificarCarroPorId(int carroId)
         {
-            var venda = await _vendaRepository.GetVendaByIdAsync(id);
-            return venda;
+            var carro = await _unitOfWork.Carros.GetCarroByIdAsync(carroId) 
+                ?? throw new DomainException("Carro não encontrado");
+            return carro;
         }
-        private async Task AtualizarCarroParaDisponivelAsync(int carroId)
+       private async Task MarcarComoVendido(Carro carro)
         {
-            var carro = await _carroRepository.GetCarroByIdAsync(carroId);
-            if (carro != null)
-            {
-                carro.SetStatus(EnumCarroStatus.Disponivel);
-                await _carroRepository.UpdateAsync(carro);
-            }
+            carro.ValidarDisponibilidadeParaVenda();
+            carro.SetStatus(EnumCarroStatus.Vendido);
+            await _unitOfWork.Carros.UpdateAsync(carro);
         }
         public async Task<bool> DeleteAsync(int id)
         {
+            await _unitOfWork.BeginTransactionAsync();
             try
             {
-                var venda = await VendaExistsAsync(id);
-                if (venda == null) return false;
-                await _unitOfWork.BeginTransactionAsync();
+                var venda = await ObterVendaOuLancarAsync(id);
                 await AtualizarCarroParaDisponivelAsync(venda.Carro.Id);
-                var result = await _vendaRepository.DeleteAsync(venda);
+                var result = await _unitOfWork.Vendas.DeleteAsync(venda);
                 await _unitOfWork.CommitAsync();
                 return result;
+            }
+            catch(DomainException ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new DomainException(ex.Message);
             }
             catch (Exception ex)
             {
@@ -98,7 +92,7 @@ namespace LocaCarros.Application.Services
         {
             try
             {
-                var venda = await _vendaRepository.GetVendaByIdAsync(id);
+                var venda = await _unitOfWork.Vendas.GetVendaByIdAsync(id);
                 if (venda == null) return null;
                 return _mapper.Map<VendaDTO>(venda);
             }
@@ -110,7 +104,7 @@ namespace LocaCarros.Application.Services
 
         public async Task<IEnumerable<VendaDTO>> GetVendasAsync()
         {
-            var vendas = await _vendaRepository.GetVendasAsync();
+            var vendas = await _unitOfWork.Vendas.GetVendasAsync();
             return _mapper.Map<IEnumerable<VendaDTO>>(vendas);
         }
 
@@ -122,7 +116,7 @@ namespace LocaCarros.Application.Services
 
             try
             {
-                var venda = await ObterVendaExistenteAsync(vendaDtoUpdate.Id);
+                var venda = await ObterVendaOuLancarAsync(vendaDtoUpdate.Id);
 
                 if (vendaDtoUpdate.CarroId != venda.CarroId)
                 {
@@ -147,16 +141,14 @@ namespace LocaCarros.Application.Services
         private async Task AtualizarVendaComNovoCarroAsync(Venda venda, VendaDTOUpdate dto)
         {
             var carroAnterior = venda.Carro;
-            var novoCarro = await _carroService.GetEntidadeCarroByIdAsync(dto.CarroId);
-            if (novoCarro == null)
-                throw new DomainException("Carro não encontrado");
+            var novoCarro = await VerificarCarroPorId(dto.CarroId);
             var dataVenda = ObterDataVendaValida(dto.DataVenda);
 
             venda.SetDataVenda(dataVenda);
             venda.SetValorVenda(dto.ValorVenda);
             venda.SetCarro(novoCarro);
 
-            await _carroService.AtualizarStatusDosCarrosAsync(carroAnterior, novoCarro);
+            await AtualizarStatusDosCarrosVendaAsync(carroAnterior, novoCarro);
         }
 
         private void AtualizarVendaExistente(Venda venda, VendaDTOUpdate dto)
@@ -164,7 +156,7 @@ namespace LocaCarros.Application.Services
             _mapper.Map(dto, venda);
         }
 
-        private async Task<Venda> ObterVendaExistenteAsync(int vendaId)
+        private async Task<Venda> ObterVendaOuLancarAsync(int vendaId)
         {
             var venda = await _unitOfWork.Vendas.GetVendaByIdAsync(vendaId);
             return venda ?? throw new DomainException("Venda não encontrada");
@@ -172,9 +164,63 @@ namespace LocaCarros.Application.Services
 
         private DateTime ObterDataVendaValida(string dataVendaStr)
         {
-            if (!DateTime.TryParse(dataVendaStr, out var dataVenda))
+            if (!DateTime.TryParseExact(dataVendaStr, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dataVenda))
                 throw new DomainException("Data de venda inválida");
             return dataVenda;
+        }
+
+
+        private async Task AtualizarCarroParaDisponivelAsync(int carroId)
+        {
+            var carro = await _unitOfWork.Carros.GetCarroByIdAsync(carroId);
+            if (carro != null)
+            {
+                carro.SetStatus(EnumCarroStatus.Disponivel);
+                await AtualizarDadosCarrosRemoverAsync(carro);
+            }
+        }
+        private async Task<Carro> AtualizarDadosCarrosRemoverAsync(Carro carroUpdate)
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var carro = await _unitOfWork.Carros.GetCarroByIdAsync(carroUpdate.Id);
+                if (carro == null)
+                    throw new DomainException("Carro não encontrado.");
+                var modelo = await _unitOfWork.Modelos.GetModeloByIdAsync(carroUpdate.Modelo.Id);
+                if (modelo == null)
+                    throw new DomainException("Modelo não encontrado.");
+                carro.Update(carroUpdate.Placa, carroUpdate.Ano, carroUpdate.Cor, carroUpdate.DataFabricacao, carroUpdate.Status, modelo);
+                var result = await _unitOfWork.Carros.UpdateAsync(carro);
+                await _unitOfWork.CommitAsync();
+                return result;
+            }
+            catch (DomainException)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new Exception("Erro ao atualizar carro.", ex);
+            }
+        }
+
+        private async Task AtualizarStatusDosCarrosVendaAsync(Carro? carroAnterior, Carro novoCarro)
+        {
+            var carrosParaAtualizar = new List<Carro>();
+
+            if (carroAnterior != null)
+            {
+                carroAnterior.SetStatus(EnumCarroStatus.Disponivel);
+                carrosParaAtualizar.Add(carroAnterior);
+            }
+
+            novoCarro.SetStatus(EnumCarroStatus.Vendido);
+            carrosParaAtualizar.Add(novoCarro);
+
+            await _unitOfWork.Carros.UpdatesListAsync(carrosParaAtualizar);
         }
     }
 }
