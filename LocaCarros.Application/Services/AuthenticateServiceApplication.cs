@@ -3,12 +3,6 @@ using LocaCarros.Application.DTOs.Authenticate;
 using LocaCarros.Application.Interfaces;
 using LocaCarros.Domain.Account;
 using LocaCarros.Domain.Entities.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace LocaCarros.Application.Services
 {
     public class AuthenticateServiceApplication : IAuthenticateServiceApplication
