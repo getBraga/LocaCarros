@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using LocaCarros.Domain.Entities;
 using LocaCarros.Domain.Enuns;
+using LocaCarros.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,16 +15,16 @@ namespace LocaCarros.Domain.Tests
         [Fact]
         public void DeveCriarModelo_ComParametros_Validos()
         {
-         
+
             var nome = "Fusca";
             var versao = "2023";
             var motorizacao = 1.0m;
             var tipoCarroceria = EnumTipoCarroceria.Hatch;
-         
+
             var marca = new Marca("Volkswagen");
-           
+
             var modelo = new Modelo(nome, versao, motorizacao, tipoCarroceria, marca);
-           
+
             Assert.NotNull(modelo);
             Assert.Equal(nome, modelo.Nome);
             Assert.Equal(versao, modelo.Versao);
@@ -60,7 +61,8 @@ namespace LocaCarros.Domain.Tests
         public void DeveLancarExcecao_QuandoMotorizacaoInvalida()
         {
             var marca = new Marca("Chevrolet");
-            Action action = () => {
+            Action action = () =>
+            {
                 Modelo modelo = new("Fusca", "2020", 0, EnumTipoCarroceria.Picape, marca);
             };
             action.Should().Throw<ArgumentException>()
@@ -119,6 +121,67 @@ namespace LocaCarros.Domain.Tests
             action.Should().Throw<InvalidOperationException>()
                 .WithMessage("O Modelo deve conter um Id válido.");
 
+        }
+        [Fact]
+        public void DeveLancarExcecao_QuandoRemoverModeloComModelosAssociados()
+        {
+            var marca = new Marca("Volkswagen");
+            var modelo = new Modelo("Fusca", "2023", 1.0m, EnumTipoCarroceria.Hatch, marca);
+            Action action = () => modelo.ValidarRemover(1);
+            action.Should().Throw<DomainException>()
+                .WithMessage("Não é possível excluir o modelo, pois existem marcas associadas a ele.");
+        }
+        [Fact]
+        public void DeveRemoverModelo_ValidarSemExcecao()
+        {
+            var marca = new Marca("Volkswagen");
+            var modelo = new Modelo("Fusca", "2023", 1.0m, EnumTipoCarroceria.Hatch, marca);
+            Action action = () => modelo.ValidarRemover(0);
+            action.Should().NotThrow<DomainException>();
+        }
+        [Fact]
+        public void DeveLancarExcecao_QuandoValidarModeloComMesmoNomePorId()
+        {
+            var marca = new Marca("Volkswagen");
+            var modelo = new Modelo("Fusca", "2023", 1.0m, EnumTipoCarroceria.Hatch, marca);
+            Action action = () => modelo.ValidarModeloComMesmoNomePorId(1, 2);
+            action.Should().Throw<DomainException>()
+                .WithMessage("Já existe um modelo com esse nome.");
+        }
+        [Fact]
+        public void DeveLancarExcecao_QuandoValidarNomeVazio()
+        {
+            var marca = new Marca("Volkswagen");
+            var modelo = new Modelo("Teste", "2023", 1.0m, EnumTipoCarroceria.Hatch, marca);
+            Action action = () => modelo.ValidarNome("");
+            action.Should().Throw<DomainException>()
+                           .WithMessage("Precisa ter um nome válido");
+        }
+        [Fact]
+        public void DeveLancarExcecao_QuandoValidarNomeMenorQue3Caracteres()
+        {
+            var marca = new Marca("Volkswagen");
+            var modelo = new Modelo("Teste", "2023", 1.0m, EnumTipoCarroceria.Hatch, marca);
+            Action action = () => modelo.ValidarNome("ab");
+            action.Should().Throw<DomainException>()
+                           .WithMessage("Precisa ter um nome válido");
+        }
+        [Fact]
+        public void DeveValidar_QuandoCondicoesAtendidas()
+        {
+            var marca = new Marca("Volkswagen");
+            var modelo = new Modelo("Teste", "2023", 1.0m, EnumTipoCarroceria.Hatch, marca);
+            Action action = () => modelo.ValidarNome(modelo.Nome);
+            action.Should().NotThrow<DomainException>();
+                           
+        }
+        [Fact]
+        public void DeveAtualizarModelo_ComMesmoNomePorId_ValidarSemExcecao()
+        {
+            var marca = new Marca("Volkswagen");
+            var modelo = new Modelo("Fusca", "2023", 1.0m, EnumTipoCarroceria.Hatch, marca);
+            Action action = () => modelo.ValidarModeloComMesmoNomePorId(1, 1);
+            action.Should().NotThrow<DomainException>();
         }
     }
 }

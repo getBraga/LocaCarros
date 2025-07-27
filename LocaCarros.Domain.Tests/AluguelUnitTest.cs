@@ -1,12 +1,7 @@
 ﻿using FluentAssertions;
 using LocaCarros.Domain.Entities;
 using LocaCarros.Domain.Enuns;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Collections.Specialized.BitVector32;
+
 
 namespace LocaCarros.Domain.Tests
 {
@@ -82,7 +77,9 @@ namespace LocaCarros.Domain.Tests
         {
             Modelo modelo = new("Fusca", "2023", 1.0m, EnumTipoCarroceria.Hatch, new Marca("Volkswagen"));
             Carro carro = new("FAX123", 2026, "Vermelho", DateTime.Now, EnumCarroStatus.Disponivel, modelo);
+
             Aluguel aluguel = new(100m, DateTime.Now, DateTime.Now.AddDays(1), carro);
+            aluguel.TrocarCarro(carro, DateTime.Now, DateTime.Now.AddDays(1), 123);
             Action action = () =>
             {
                 aluguel.Update(150m, DateTime.Now.AddDays(2), DateTime.Now.AddDays(3), carro);

@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using LocaCarros.Domain.Entities;
+using LocaCarros.Domain.Exceptions;
 
 namespace LocaCarros.Domain.Tests
 {
@@ -8,7 +9,7 @@ namespace LocaCarros.Domain.Tests
         [Fact]
         public void CriarMarca_ComParametrosValidos()
         {
-            
+
             Action action = () =>
             {
                 Marca marca = new("Toyota");
@@ -59,15 +60,39 @@ namespace LocaCarros.Domain.Tests
         [Fact]
         public void AtualizarMarca_ComIdInvalido_DeveLancarExcecao()
         {
-            
+
             var marca = new Marca("Toyota");
-         
+
             marca.GetType().GetProperty("Id")!.SetValue(marca, -1);
-           
+
             Action act = () => marca.Update("Honda");
-          
+
             act.Should().Throw<InvalidOperationException>()
                 .WithMessage("A marca deve conter um Id válido.");
+        }
+
+        [Fact]
+        public void ValidarRemover_ComModelosAssociados_DeveLancarExcecao()
+        {
+
+            var marca = new Marca("Toyota");
+            bool modelosMarca = true;
+
+            Action act = () => marca.ValidarRemover(modelosMarca);
+
+            act.Should().Throw<DomainException>()
+                .WithMessage("Não é possível excluir a marca, pois existem modelos associados a ela.");
+        }
+
+        [Fact]
+        public void ValidarRemover_ComZeroModelosAssociados_NaoDeveLancarExcecao()
+        {
+            var marca = new Marca("Toyota");
+            bool modelosMarca = false;
+
+            Action act = () => marca.ValidarRemover(modelosMarca);
+
+            act.Should().NotThrow<DomainException>();
         }
     }
 }

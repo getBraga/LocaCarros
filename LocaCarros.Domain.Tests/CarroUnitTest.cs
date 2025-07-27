@@ -168,7 +168,7 @@ namespace LocaCarros.Domain.Tests
         {
             Modelo modelo = new("Fusca", "2023", 1.0m, EnumTipoCarroceria.Hatch, new Marca("Volkswagen"));
             var carro = new Carro("FAX123", 2026, "Vermelho", DateTime.Now, EnumCarroStatus.Disponivel, modelo);
-            
+            carro.ValidarHasModelo(modelo);
             Action action = () =>
             {
                 carro.Update("FAX456", 2025, "Azul", DateTime.Now.AddYears(-1), EnumCarroStatus.Alugado, modelo);
@@ -191,6 +191,31 @@ namespace LocaCarros.Domain.Tests
             action.Should().Throw<InvalidOperationException>().WithMessage("O Carro deve conter um Id válido.");
         }
 
-    
+        [Fact]
+        public void AtualizarCarro_ComModeloNulo_DeveLancarExcecao()
+        {
+            Modelo modelo = new("Fusca", "2023", 1.0m, EnumTipoCarroceria.Hatch, new Marca("Volkswagen"));
+            var carro = new Carro("FAX123", 2026, "Vermelho", DateTime.Now, EnumCarroStatus.Disponivel, modelo);
+           
+            Action action = () =>
+            {
+                carro.ValidarHasModelo(null);
+            };
+            action.Should().Throw<ArgumentNullException>().WithMessage("O modelo não pode ser nulo.*").And.ParamName.Should().Be("modelo");
+        }
+        [Fact]
+        public void AtualizarCarro_ComIdModeloErrado_DeveLancarExcecao()
+        {
+            Modelo modelo = new("Fusca", "2023", 1.0m, EnumTipoCarroceria.Hatch, new Marca("Volkswagen"));
+            var carro = new Carro("FAX123", 2026, "Vermelho", DateTime.Now, EnumCarroStatus.Disponivel, modelo);
+            carro.GetType().GetProperty("ModeloId")!.SetValue(carro, 1);
+            modelo.GetType().GetProperty("Id")!.SetValue(modelo, 2);
+          
+            Action action = () =>
+            {
+                carro.ValidarHasModelo(modelo);
+            };
+            action.Should().Throw<DomainException>().Where(e => e.Message.Contains("O carro com a placa"));
+        }
     }
 }
