@@ -76,7 +76,7 @@ namespace LocaCarros.Application.Services
         public async Task<AluguelDTO?> GetAluguelByIdAsync(int id)
         {
             var aluguel = await _unitOfWork.Alugueis.GetAluguelByIdAsync(id);
-            if (aluguel == null) throw new Exception("Aluguel não encontrado!");
+            if (aluguel == null) return null;
             return _mapper.Map<AluguelDTO>(aluguel);
         }
 
@@ -118,7 +118,7 @@ namespace LocaCarros.Application.Services
             carro.SetStatus(EnumCarroStatus.Alugado);
             var modelo = await _unitOfWork.Modelos.GetModeloByIdAsync(carro.Modelo.Id);
             carro.ValidarHasModelo(modelo);
-            carro.Update(carro.Placa, carro.Ano, carro.Cor, carro.DataFabricacao, carro.Status, modelo);
+            carro.Update(carro.Placa, carro.Ano, carro.Cor, carro.DataFabricacao, carro.Status, modelo!);
             await _unitOfWork.Carros.UpdateAsync(carro);
         }
         private async Task<Carro> VerificaCarroId(int carroId)
@@ -138,7 +138,7 @@ namespace LocaCarros.Application.Services
         {
             var carroAnterior = aluguel.Carro;
             var novoCarro = await VerificaCarroId(aluguelDtoUpdate.CarroId);
-            var dataInicio = ObterDataAluguel(aluguelDtoUpdate.DataInicio);
+             var dataInicio = ObterDataAluguel(aluguelDtoUpdate.DataInicio);
             var dataDevolucao = ObterDataAluguel(aluguelDtoUpdate.DataDevolucao);
             aluguel.TrocarCarro(novoCarro, dataInicio, dataDevolucao, aluguelDtoUpdate.ValorAluguel);
             await AtualizarStatusDosCarrosAsync(carroAnterior, novoCarro);
@@ -164,7 +164,7 @@ namespace LocaCarros.Application.Services
         private static DateTime ObterDataAluguel(string dataStr)
         {
             if (!DateTime.TryParseExact(dataStr, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dataVenda))
-                throw new DomainException("Data de venda inválida");
+                throw new DomainException("Data de aluguel inválida");
             return dataVenda;
         }
         private static void AtualizarAluguelExistente(Aluguel aluguel, AluguelDTOUpdate aluguelDtoUpdate)

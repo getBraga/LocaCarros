@@ -17,7 +17,7 @@ namespace LocaCarros.Domain.Entities
 
         [ExcludeFromCodeCoverage]
         private Modelo() { }
-   
+
         public Modelo(string nome, string versao, decimal motorizacao, EnumTipoCarroceria tipoCarroceria, Marca marca)
         {
             SetNome(nome);
@@ -27,7 +27,7 @@ namespace LocaCarros.Domain.Entities
             SetMarca(marca);
         }
 
-  
+
         private void SetNome(string nome)
         {
             if (String.IsNullOrWhiteSpace(nome))
@@ -36,6 +36,16 @@ namespace LocaCarros.Domain.Entities
             }
             Nome = nome.Trim();
         }
+        public void ValidarNome(string nome)
+        {
+
+            if (String.IsNullOrWhiteSpace(nome) || nome.Length < 3)
+            {
+                throw new DomainException("Precisa ter um nome válido");
+            }
+        }
+
+
         private void SetVersao(string versao)
         {
             if (String.IsNullOrEmpty(versao))
@@ -60,7 +70,7 @@ namespace LocaCarros.Domain.Entities
 
         private void SetMarca(Marca marca)
         {
-        
+
             Marca = marca ?? throw new ArgumentNullException(nameof(marca), "A marca não pode ser nula.");
             MarcaId = marca.Id;
         }
@@ -71,8 +81,8 @@ namespace LocaCarros.Domain.Entities
         }
         public void ValidarModeloComMesmoNomePorId(int idAtual, int novoId)
         {
-          
-               if(idAtual != novoId)
+
+            if (idAtual != novoId)
                 throw new DomainException("Já existe um modelo com esse nome.");
         }
         public void Update(string nome, string versao, decimal motorizacao, EnumTipoCarroceria tipoCarroceria, Marca marca)

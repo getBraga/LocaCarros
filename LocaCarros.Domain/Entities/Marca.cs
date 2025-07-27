@@ -16,10 +16,10 @@ namespace LocaCarros.Domain.Entities
             if (string.IsNullOrWhiteSpace(nome)) { throw new ArgumentException("Precisa Conter um nome válido", nameof(nome)); }
             SetNome(nome);
         }
-        public void ValidarRemover(int modelosMarca)
+        public void ValidarRemover(bool modelosMarca)
         {
 
-            if (modelosMarca > 0)
+            if (modelosMarca)
                 throw new DomainException("Não é possível excluir a marca, pois existem modelos associados a ela.");
         }
         public void Update(string nome)

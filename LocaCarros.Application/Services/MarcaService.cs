@@ -12,7 +12,7 @@ namespace LocaCarros.Application.Services
   
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        public MarcaService(IUnitOfWork unitOfWork, IMapper mapper, IModeloRepository modeloRepository)
+        public MarcaService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
@@ -42,11 +42,11 @@ namespace LocaCarros.Application.Services
             return _mapper.Map<IEnumerable<Marca>, IEnumerable<MarcaDTO>>(marcas);
         }
 
-        private async Task<int> PodeDeletarMarcaAsync(int id)
+        private async Task<bool> PodeDeletarMarcaAsync(int id)
         {
             var marcaModelos = await _unitOfWork.Modelos.GetModelosByMarcaIdAsync(id);
     
-            return marcaModelos.Count();
+            return marcaModelos!= null && marcaModelos.Any();
         }
 
         public async Task<bool> RemoveAsync(int id)
@@ -59,8 +59,8 @@ namespace LocaCarros.Application.Services
                 {
                     return false;
                 }
-                var quantidadeModelos = await PodeDeletarMarcaAsync(id);
-                marca.ValidarRemover(quantidadeModelos);
+                var validaPodeRemover = await PodeDeletarMarcaAsync(id);
+                marca.ValidarRemover(validaPodeRemover);
 
                 bool resultMarca = await _unitOfWork.Marcas.DeleteAsync(marca);
                 await _unitOfWork.CommitAsync();

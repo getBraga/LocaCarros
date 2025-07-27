@@ -26,21 +26,16 @@ namespace LocaCarros.Application.Services
         {
            await _unitOfWork.BeginTransactionAsync();
            try { 
-            if (string.IsNullOrWhiteSpace(modeloDto.Nome) || modeloDto.Nome.Length < 3)
-            {
-                throw new DomainException("O nome do modelo deve ter pelo menos 3 caracteres.");
-            }
+           
             var modelo = _mapper.Map<Modelo>(modeloDto);
+              modelo.ValidarNome(modelo.Nome);
             if (await IsModeloExistsAsync(modelo.Nome))
             {
                 throw new DomainException("Já existe um modelo com esse nome.");
             }
 
             var result = await _unitOfWork.Modelos.CreateAsync(modelo);
-            if(result == null)
-            {
-                throw new DomainException("Erro ao criar o modelo.");
-            }
+            
             await _unitOfWork.CommitAsync();
                 return _mapper.Map<ModeloDTO>(result);
             }catch(DomainException)
