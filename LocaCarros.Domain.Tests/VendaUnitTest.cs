@@ -1,6 +1,7 @@
 using FluentAssertions;
 using LocaCarros.Domain.Entities;
 using LocaCarros.Domain.Enuns;
+using LocaCarros.Domain.Exceptions;
 
 namespace LocaCarros.Domain.Tests;
 
@@ -45,7 +46,7 @@ public class VendaUnitTest
             Venda venda = new(10000m, default, carro);
         };
         
-        action.Should().Throw<ArgumentException>().WithMessage("Data de venda inválida.*").And.ParamName.Should().Be("dataVenda");
+        action.Should().Throw<DomainException>().WithMessage("Data de venda inválida.");
     }
 
     [Fact]
@@ -60,9 +61,9 @@ public class VendaUnitTest
         };
 
         action.Should()
-            .Throw<ArgumentException>()
-            .WithMessage("A data da venda não pode ser no futuro.*")
-            .And.ParamName.Should().Be("dataVenda");
+            .Throw<DomainException>()
+            .WithMessage("A data da venda não pode ser no futuro.");
+          
     }
     [Fact]
     public void CriarVenda_ComCarroNulo_DeveLancarExcecao()
@@ -72,15 +73,16 @@ public class VendaUnitTest
             Venda venda = new(10000m, DateTime.Now, null!);
         };
         
-        action.Should().Throw<ArgumentNullException>().WithMessage("O carro não pode ser nulo.*").And.ParamName.Should().Be("carro");
+        action.Should().Throw<DomainException>().WithMessage("O carro não pode ser nulo.");
     }
     [Fact]
     public void AtualizarVenda_ComParametrosValidos()
     {
+        
         Modelo modelo = new("Fusca", "2023", 1.0m, EnumTipoCarroceria.Hatch, new Marca("Volkswagen"));
         Carro carro = new("FAX123", 2026, "Vermelho", DateTime.Now, EnumCarroStatus.Disponivel, modelo);
         Venda venda = new(10000m, DateTime.Now, carro);
-        
+        venda.GetType().GetProperty("Id")!.SetValue(venda, 1);
         Action action = () =>
         {
             venda.Update(12000m, DateTime.Now.AddDays(-1), carro);

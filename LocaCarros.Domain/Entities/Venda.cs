@@ -1,10 +1,9 @@
-﻿using Microsoft.VisualBasic;
-using System;
-using System.Collections.Generic;
+﻿using LocaCarros.Domain.Exceptions;
+
+
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
+
 
 namespace LocaCarros.Domain.Entities
 {
@@ -15,7 +14,7 @@ namespace LocaCarros.Domain.Entities
         public DateTime DataVenda { get; private set; }
         public int CarroId { get; private set; }
         public Carro Carro { get; private set; } = null!;
-        public byte[] RowVersion { get; set; } = [];
+        public byte[] RowVersion { get; set; } = Array.Empty<byte>();
 
         [ExcludeFromCodeCoverage]
         private Venda() { }
@@ -35,7 +34,7 @@ namespace LocaCarros.Domain.Entities
 
         public void Update(decimal valorVenda, DateTime dataVenda, Carro carro)
         {
-            if (Id < 0)
+            if (Id <= 0)
                 throw new InvalidOperationException("A Venda deve conter um Id válido.");
             SetValorVenda(valorVenda);
             SetDataVenda(dataVenda);
@@ -54,17 +53,21 @@ namespace LocaCarros.Domain.Entities
         {
             if (dataVenda == default)
             {
-                throw new ArgumentException("Data de venda inválida.", nameof(dataVenda));
+                throw new DomainException("Data de venda inválida.");
             }
             if (dataVenda > DateTime.Now)
             {
-                throw new ArgumentException("A data da venda não pode ser no futuro.", nameof(dataVenda));
+                throw new DomainException("A data da venda não pode ser no futuro.");
             }
             DataVenda = dataVenda;
         }
-        public void SetCarro(Carro carro)
+
+    
+
+
+        public void SetCarro(Carro? carro)
         {
-            Carro = carro ?? throw new ArgumentNullException(nameof(carro), "O carro não pode ser nulo.");
+            Carro = carro ?? throw new DomainException("O carro não pode ser nulo.");
             CarroId = carro.Id;
         }
 

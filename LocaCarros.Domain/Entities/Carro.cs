@@ -95,7 +95,7 @@ namespace LocaCarros.Domain.Entities
         
             if(modelo == null)
             {
-                throw new ArgumentNullException(nameof(modelo), "O modelo não pode ser nulo.");
+                throw new DomainException("O modelo não pode ser nulo.");
             }
             if (ModeloId != modelo.Id)
             {

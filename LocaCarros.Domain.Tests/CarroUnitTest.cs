@@ -201,7 +201,7 @@ namespace LocaCarros.Domain.Tests
             {
                 carro.ValidarHasModelo(null);
             };
-            action.Should().Throw<ArgumentNullException>().WithMessage("O modelo não pode ser nulo.*").And.ParamName.Should().Be("modelo");
+            action.Should().Throw<DomainException>().WithMessage("O modelo não pode ser nulo.");
         }
         [Fact]
         public void AtualizarCarro_ComIdModeloErrado_DeveLancarExcecao()
