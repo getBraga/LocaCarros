@@ -27,7 +27,7 @@ namespace LocaCarros.Application.Tests
         private readonly DateTime _dataVenda = DateTime.Now;
         private readonly VendaDTO _vendaDto;
         private readonly VendaDTOAdd _vendaDTOAdd;
-        private readonly VendaDTOUpdate _vendaDTOUpdate; 
+        private readonly VendaDTOUpdate _vendaDTOUpdate;
         public VendaServiceTest()
         {
             _unitOfWorkMock = new Mock<IUnitOfWork>();
@@ -56,7 +56,7 @@ namespace LocaCarros.Application.Tests
                 DataVenda = _venda.DataVenda.ToString("dd/MM/yyyy"),
                 CarroId = _carro.Id
             };
-          _vendaDTOUpdate  = new VendaDTOUpdate
+            _vendaDTOUpdate = new VendaDTOUpdate
             {
                 Id = 1,
                 ValorVenda = 16000.00m,
@@ -213,6 +213,18 @@ namespace LocaCarros.Application.Tests
             Assert.Contains("não está disponível para venda!", domainEx.Message);
         }
         [Fact]
+        public async Task CreateAsync_DeveLancarExceptionAoCriarVenda()
+        {
+
+            _venda.GetType().GetProperty("CarroId")?.SetValue(_venda, 1);
+            _vendaDTOAdd.CarroId = 1;
+            _mapperMock.Setup(v => v.Map<Venda>(_vendaDTOAdd)).Returns(_venda);
+            _unitOfWorkMock.Setup(v => v.Carros.GetCarroByIdAsync(1)).ReturnsAsync(_carro);
+            _unitOfWorkMock.Setup(v => v.Vendas.CreateAsync(_venda)).ThrowsAsync(new Exception("Erro ao criar a venda."));
+            var ex = await Assert.ThrowsAsync<Exception>(() => _vendaService.CreateAsync(_vendaDTOAdd));
+            Assert.Equal("Erro inesperado ao criar venda.", ex.Message);
+        }
+        [Fact]
         public async Task CreateAsync_DeveCriarVendaComSucesso()
         {
             _venda.GetType().GetProperty("CarroId")?.SetValue(_venda, 1);
@@ -222,7 +234,7 @@ namespace LocaCarros.Application.Tests
             _unitOfWorkMock.Setup(v => v.Carros.GetCarroByIdAsync(1)).ReturnsAsync(_carro);
             _unitOfWorkMock.Setup(v => v.Vendas.CreateAsync(_venda)).ReturnsAsync(_venda);
             var result = await _vendaService.CreateAsync(_vendaDTOAdd);
-            
+
             Assert.NotNull(result);
             Assert.IsAssignableFrom<VendaDTO>(result);
             Assert.Equal(_vendaDto.Id, result.Id);
@@ -290,11 +302,11 @@ namespace LocaCarros.Application.Tests
             _unitOfWorkMock.Setup(v => v.Carros.GetCarroByIdAsync(1)).ReturnsAsync(_carro);
             _unitOfWorkMock.Setup(v => v.Vendas.UpdateAsync(_venda)).ReturnsAsync(_venda);
             _mapperMock.Setup(m => m.Map<VendaDTO>(_venda)).Returns(_vendaDto);
-            var vendaUpdateResult = await  _vendaService.UpdateAsync(_vendaDTOUpdate);
+            var vendaUpdateResult = await _vendaService.UpdateAsync(_vendaDTOUpdate);
             _unitOfWorkMock.Verify(v => v.Vendas.UpdateAsync(It.IsAny<Venda>()), Times.Once);
             Assert.Equal(_vendaDto.Id, vendaUpdateResult.Id);
             Assert.Equal(_vendaDto.ValorVenda, vendaUpdateResult.ValorVenda);
-           
+
 
         }
 
@@ -313,7 +325,7 @@ namespace LocaCarros.Application.Tests
             Assert.Equal(_vendaDto.Id, vendaUpdateResult.Id);
             Assert.Equal(_vendaDto.ValorVenda, vendaUpdateResult.ValorVenda);
         }
-       
-        
+
+
     }
 }

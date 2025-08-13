@@ -20,7 +20,7 @@ namespace LocaCarros.Application.Services
         {
 
             _mapper = mapper;
-            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            _unitOfWork = unitOfWork;
         }
         public async Task<VendaDTO> CreateAsync(VendaDTOAdd vendaDtoAdd)
         {
