@@ -12,7 +12,7 @@ namespace LocaCarros.Application.Services
         public AuthenticateServiceApplication(IAuthenticate authenticateService, IMapper mapper)
         {
             _authenticateServiceInfra = authenticateService ?? throw new ArgumentNullException(nameof(authenticateService));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _mapper = mapper;
         }
         public async Task<bool> AuthenticateAsync(LoginDTO loginDTO)
         {
