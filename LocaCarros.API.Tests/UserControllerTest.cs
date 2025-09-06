@@ -26,8 +26,7 @@ namespace LocaCarros.API.Tests
         {
             Email = "teste@locacarros.com",
             Username = "testeUser",
-            // gg-ignore
-            Password = "FakePasswordForUnitTest",
+         
 
         };
         private void SimularUsuarioAutenticado(string email)
